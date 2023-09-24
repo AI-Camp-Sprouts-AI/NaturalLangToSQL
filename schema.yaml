@@ -1,0 +1,10 @@
+--schema that stores data about dogs (sorry if we were supposed to create a scheme for actual data)
+CREATE SCHEMA dogs;
+
+CREATE TABLE dogs.data (
+    dog_weight FLOAT(5,2),
+    dog_name VARCHAR(50),
+    dog_breed VARCHAR(50),
+    owner_name VARCHAR(50),
+    dog_age DATE
+);
