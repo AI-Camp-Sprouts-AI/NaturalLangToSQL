@@ -1,0 +1,18 @@
+{
+	"schemas": [
+		"(id BIGINT PRIMARY KEY, first_name VARCHAR(50), last_name VARCHAR(50), birthday DATE, email VARCHAR(50), phone_no VARCHAR(20), country VARCHAR(50), time_stamp TIME)"
+	],
+	"LLM_inputs": [
+		"SELECT first_name, last_name FROM table WHERE country='Canada';",
+		"SELECT * FROM table WHERE birthday BETWEEN '1990-01-01' AND '1990-01-31';",
+		"SELECT * FROM table;",
+		"SELECT firstname, lastname FROM table WHERE country='Canada';",
+		"SELECT * FROM table where birthdate BETWEEN '1990-01-01' AND '1990-01-31';",
+		"SELECT * FROM table"
+	],
+	"expected_outputs": [
+		"SELECT first_name, last_name FROM table WHERE country='Canada';",
+		"SELECT * FROM table WHERE birthday BETWEEN '1990-01-01' AND '1990-01-31';",
+		"SELECT * FROM table;"
+	]
+}
