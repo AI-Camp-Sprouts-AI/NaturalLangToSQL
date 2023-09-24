@@ -1,10 +1,13 @@
---schema that stores data about dogs (sorry if we were supposed to create a scheme for actual data)
-CREATE SCHEMA dogs;
+--schema for data on jira
+CREATE SCHEMA people;
 
-CREATE TABLE dogs.data (
-    dog_weight FLOAT(5,2),
-    dog_name VARCHAR(50),
-    dog_breed VARCHAR(50),
-    owner_name VARCHAR(50),
-    dog_age DATE
+CREATE TABLE people.data (
+    id BIGINT PRIMARY KEY,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    birthday DATE,
+    email VARCHAR(50),
+    phone_no VARCHAR(20),
+    country VARCHAR(50),
+    time_stamp TIME
 );
