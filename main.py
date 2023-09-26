@@ -26,28 +26,40 @@ class LLM:
     def _initialize_chain(self):
         model = OpenAI(openai_api_key = self.api_key, temperature=0)
         primer = """
-            You are a helpful assistant that translates natural language to SQL Queries. 
-            You only respond with the correct SQL Query and nothing else, NEVER including anything but exactly the SQL Query desired.
-            You have been working with the database for a long time, so you know it very well: {schema}\n
-        """.format(schema=self.schema)
+You are an experienced data analyst with specialized knowledge in SQL databases and queries. 
+You can provide accurate SQL queries based on the provided database schema and make use of your expert knowledge of SQL and databases.
+The purpose is to assist with formulating SQL queries based on the information available, maintaining the accuracy and relevance of the responses.
+For valid and clear questions related to the provided database, provide the appropriate SQL query as a response and nothing else.
+If a question is asked that is incomplete, ambiguous, unclear, or unrelated to the provided database, respond with \"I did not understand.'\" and explain why you don't understand.
+Database Schema:
+{schema}
+        """.format(schema=self.schema).strip()
+        numbers = "\nAny numbers including {numbers} are valid.\n"
         prompt = PromptTemplate(
-            input_variables=["question"], 
-            template = primer + "{question}"
+            input_variables=["question", "numbers"], 
+            template = primer + numbers + "{question}"
         )
         self.chain = LLMChain(llm=model, prompt=prompt)
 
     def load_schema_as_string(self, schema_str):
-        self.schema = schema_str
+        self.schema = schema_str.strip()
         self._initialize_chain()
 
+
     def load_schema_from_file(self, schema_file):
-        self.schema = ""
+        with open(schema_file, 'r') as file:
+            self.schema = file.read().strip()
         self._initialize_chain()
 
     def convert_text_to_sql(self, text):
         if not self.chain:
             return "Chain must be initialized before query."
-        sql = self.chain.run(question=text).strip()
+        if len(text) == 0:
+            return "I did not understand. Can you please provide more details?"
+        if text[-1] != '.' and text[-1] != '?':
+            text += "?"
+        numbers = ', '.join((word[:-1] if word[:-1].isdigit() else word) for word in text.split() if word.isdigit() or word[:-1].isdigit())
+        sql = self.chain.run(question=text, numbers=numbers).strip()
         return sql
 
     def visualize_data(self, dataframe):
@@ -57,12 +69,11 @@ class LLM:
         refined_query = text
         return refined_query
 
-
 schema = """
 CREATE TABLE Books (
     BookID INT AUTO_INCREMENT PRIMARY KEY,
     Title VARCHAR(100) NOT NULL,
-    AuthorID INT,
+    AuthorID INT,   
     PublisherID INT,
     PublishedYear YEAR,
     ISBN VARCHAR(20),
@@ -82,7 +93,7 @@ if __name__ == '__main__':
     llm_instance = factory.create_llm_instance()
     llm_instance.load_schema_as_string(schema)
 
-    # text = input()
-    text = "Find the total price of books for each author, where the total price is greater than 100, for books published after the year 2000 and have a PageCount greater than 300. List the results by AuthorID. The result should include the AuthorID and the total price of the books."
+    text = input()
+    # text = "Find the total price of books for each author, where the total price is greater than 100, for books published after the year 2000 and have a PageCount greater than 300. List the results by AuthorID. The result should include the AuthorID and the total price of the books."
     sql = llm_instance.convert_text_to_sql(text)
     print(sql)
