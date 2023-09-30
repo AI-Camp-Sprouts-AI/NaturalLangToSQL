@@ -4,7 +4,7 @@ CREATE SCHEMA dogs;
 CREATE TABLE dogs.data (
     dog_weight FLOAT(5,2),
     dog_name VARCHAR(50),
-    dog_breed VARCHAR(50),
+    dog_country VARCHAR(50),
     owner_name VARCHAR(50),
-    dog_age DATE
+    dog_age INT
 );
