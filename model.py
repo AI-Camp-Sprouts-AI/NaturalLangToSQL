@@ -33,7 +33,7 @@ def load_model(model_type: str, model_name: str, api_key: str, *args, **kwargs) 
 
     if model_type == "googlepalm": # text-bison-001, chat-bison-001, embedding-gecko-001, embedding-gecko-002
         from langchain.llms import GooglePalm
-        return GooglePalm(model_name=model_name, google_api_key=api_key, *args, **kwargs)
+        return GooglePalm(model_name="models/"+model_name, google_api_key=api_key, *args, **kwargs)
 
     # Chat Models    
     if model_type == "chatopenai": # gpt-4, gpt-4-0613, gpt-4-32k, gpt-4-32k-0613, gpt-3.5-turbo, gpt-3.5-turbo-0613, gpt-3.5-turbo-16k, gpt-3.5-turbo-16k-0613
@@ -42,7 +42,7 @@ def load_model(model_type: str, model_name: str, api_key: str, *args, **kwargs) 
     
     if model_type == "chatanthropic": # no model names
         from langchain.chat_models import ChatAnthropic
-        return ChatAnthropic(model_name=model_name, anthropic_api_key=api_key, *args, **kwargs)
+        return ChatAnthropic(anthropic_api_key=api_key, *args, **kwargs)
     
     if model_type == "jinachat": # no model names
         from langchain.chat_models import JinaChat
