@@ -3,7 +3,7 @@ from langchain.chains import LLMChain
 from langchain.prompts import PromptTemplate
 from dotenv import load_dotenv
 from os import getenv
-from model import load_model
+from model import load_llm_model
 import json
 
 class LLMFactory:
@@ -28,8 +28,7 @@ class LLM:
         self.api_structure = None
 
     def _initialize_chain(self):
-        # Model
-        model = load_model(self.model_type, self.model_name, self.api_key, temperature=0)
+        model = load_llm_model(self.model_type, self.api_key, self.model_name, temperature=0)
 
         template = """
             You are an advanced API interpreter. Your task is to extract the HTTP method, endpoint, and body of the API request from the provided command.
@@ -63,7 +62,6 @@ class LLM:
         self.api_structure = api_structure_str.strip()
         self._initialize_chain()
 
-
     def load_api_structure_from_file(self, api_structure_file: str):
         with open(api_structure_file, 'r') as file:
             self.api_structure = file.read().strip()
@@ -91,6 +89,7 @@ class LLM:
         refined_query = text
         return refined_query
 
+
 # Example usage
 if __name__ == '__main__':
     load_dotenv()
@@ -110,5 +109,4 @@ if __name__ == '__main__':
         llm_instance = factory.create_llm_instance(model_type=model_type, model_name=model_name)
         llm_instance.load_api_structure_as_string(api_structure)
         text = input("Prompt: ")
-        # text = "Update the status of pet 789 to 'available'."
         print(llm_instance.convert_text_to_command(text) + '\n')
