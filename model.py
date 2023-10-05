@@ -3,24 +3,23 @@ from langchain.schema.embeddings import Embeddings
 
 def load_llm_model(model_type: str, api_key: str, model_name: str = "", *args, **kwargs) -> BaseLanguageModel:
     """
-    Load and return a language or chat model based on the specified model type and name.
+    Load a specified language or chat model.
 
-    This function dynamically imports and creates an instance of the specified model type 
-    with the provided model name and API key. Additional arguments and keyword arguments
-    are passed to the model's constructor.
+    Args:
+        model_type (str): Type of the model ("huggingface", "openai", etc.).
+        api_key (str): API key for model initialization.
+        model_name (str, optional): Model identifier. Defaults to "".
+        *args: Positional arguments for the model.
+        **kwargs: Keyword arguments for the model.
 
-    :param str model_type: The type of the model to load. Supported model types include 
-                       "huggingface", "openai", "googlepalm", 
-                       "chatopenai", "chatanthropic" and "jinachat".
-    :param str api_key: The API key to use when initializing the model.
-    :param str model_name: The name or identifier of the model to load.
-    :param args: Additional positional arguments to pass to the model's constructor.
-    :param kwargs: Additional keyword arguments to pass to the model's constructor.
-    :return: An instance of the specified model.
-    :raises ValueError: If the specified model type is not supported.
+    Returns:
+        BaseLanguageModel: Loaded model instance.
 
-    Example usage:
-        llm_model = load_llm_model("openai", "XXXXXXXXXXXXX", "text-davinci-003", temperature=0.1)
+    Raises:
+        ValueError: If the model type is unsupported.
+
+    Example:
+        >>> llm_model = load_llm_model("openai", "API_KEY", "text-davinci-003", temperature=0.1)
     """
 
     # LLMS
@@ -53,23 +52,23 @@ def load_llm_model(model_type: str, api_key: str, model_name: str = "", *args, *
 
 def load_embeddings_model(model_type: str, api_key: str, model_name: str = "", *args, **kwargs) -> Embeddings:
     """
-    Load and return an embeddings model based on the specified model type and name.
+    Load a specified embeddings model.
 
-    This function dynamically imports and creates an instance of the specified model type 
-    with the provided model name and API key. Additional arguments and keyword arguments
-    are passed to the model's constructor.
+    Args:
+        model_type (str): Type of the model ("huggingface", "openai", etc.).
+        api_key (str): API key for model initialization.
+        model_name (str, optional): Model identifier. Defaults to "".
+        *args: Positional arguments for the model.
+        **kwargs: Keyword arguments for the model.
 
-    :param str model_type: The type of the model to load. Supported model types include 
-                       "huggingface", "openai" and "googlepalm".
-    :param str api_key: The API key to use when initializing the model.
-    :param str model_name: The name or identifier of the model to load.
-    :param args: Additional positional arguments to pass to the model's constructor.
-    :param kwargs: Additional keyword arguments to pass to the model's constructor.
-    :return: An instance of the specified model.
-    :raises ValueError: If the specified model type is not supported.
+    Returns:
+        Embeddings: Loaded embeddings model instance.
 
-    Example usage:
-        embeddings_model = load_embeddings_model("openai", "XXXXXXXXXXXXX")
+    Raises:
+        ValueError: If the model type is unsupported.
+
+    Example:
+        >>> embeddings_model = load_embeddings_model("openai", "API_KEY")
     """
 
     if model_type == "huggingface": # any huggingface repo id

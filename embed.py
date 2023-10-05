@@ -1,50 +1,78 @@
 from dotenv import load_dotenv
 from os import getenv
 from model import load_embeddings_model
-from yaml import safe_load
 from langchain.vectorstores import FAISS
-from langchain.schema.document import Document
+from langchain.text_splitter import RecursiveCharacterTextSplitter
 
-def _load_api_structure():
+def _load_api_structure() -> list:
+    """
+    Load the API structure from a text file and split it into manageable chunks using a text splitter.
+
+    Returns:
+        list: A list of API structure chunks.
+    """
+
     api_structure = ""
+
+    # Read API structure from file
     with open("api_structure.txt", "r") as file:
         api_structure = file.read().strip()
 
-    api_data = safe_load(api_structure)
-    paths = api_data.get("paths", {})
+    # Split the API structure into chunks
+    text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=1000,
+        chunk_overlap=100,
+        length_function=len
+    )
 
-    api_strings = []
+    texts = text_splitter.create_documents([api_structure])
 
-    for path, methods in paths.items():
-        for method, details in methods.items():
-            details_str = f"{path} ({method.upper()}):\n" + "\n".join([f"{k}: {v}" for k, v in details.items()])
-            api_strings.append(details_str)
-
-    return api_strings
+    return texts
 
 def embed_api_structure():
+    """
+    Embed the API structure into a FAISS index and save it locally.
+    """
+
+    # Load environment variables
     load_dotenv()
     api_key = getenv('OPENAI_API_KEY')
+
+    # Load embeddings model
     embeddings_model = load_embeddings_model("openai", api_key)
 
+    # Retrieve the API structure
     api_structure = _load_api_structure()
-    api_structure = [Document(page_content=api) for api in api_structure]
 
+    # Embed the API structure into a FAISS index
     index = FAISS.from_documents(api_structure, embeddings_model)
+
+    # Save the FAISS index locally
     index.save_local("index")
 
-def get_relevant_api_calls(query: str, top_k: int):
+def get_relevant_api_calls(query: str, top_k: int) -> list:
+    """
+    Search the embedded API structure for relevant API calls based on the provided query.
+
+    Args:
+        query (str): The search query.
+        top_k (int): The number of top relevant API calls to retrieve.
+
+    Returns:
+        list: A list of relevant API calls.
+    """
+
+    # Load environment variables
     load_dotenv()
     api_key = getenv('OPENAI_API_KEY')
+
+    # Load embeddings model
     embeddings_model = load_embeddings_model("openai", api_key)
 
+    # Load the FAISS index locally
     index = FAISS.load_local("index", embeddings_model)
 
+    # Search the FAISS index for relevant API calls
     docs = index.similarity_search(query, top_k)
 
     return [doc.page_content for doc in docs]
-
-if __name__ == '__main__':
-    #embed_api_structure()
-    text = input("Prompt: ")
-    print(get_relevant_api_calls(text, 3))
