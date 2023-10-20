@@ -7,7 +7,8 @@ setup(
     install_requires=[
         'langchain',
         'langchain-experimental',
-        'openai'
+        'openai',
+        'python-dotenv'
     ],
     entry_points="""
     [console_scripts]
