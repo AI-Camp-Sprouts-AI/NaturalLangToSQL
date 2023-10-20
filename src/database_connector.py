@@ -16,6 +16,5 @@ I leave the structure of this module implementation to the developer.
 The database connection initialization has to be done within this module,
 and that connection has to be maintained till the end of the application.
 
-If there are any specific 
 """
 
