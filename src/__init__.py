@@ -21,8 +21,31 @@ def create_terminal_instance():
 
 
 def run_test_suites():
+    """
+    This function should use the testcase_runner.py module to run the testcases
+    
+    This function should get inputs:
+    1. List down all the test files for the user to select
+    
+    """
     print("Run the test suites here...")
+    # Call the testcase_runner file here
 
 
 def create_mock_data():
+    """
+    This function should use the mock_data_generator.py module
+    to create the mock data.
+
+    The data structures will be listed under the file format
+        <table_name>.py
+
+    This function should get two inputs
+    1. List down all the data structure files for the user to select
+    2. Ask how many number of fake data has to be generated
+    
+    """
     print("Create the mock data here...")
+    # Call the mock_data_generator file here
+    
+    
