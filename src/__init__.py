@@ -14,6 +14,21 @@ def create_terminal_instance():
     api_key = getenv('OPENAI_API_KEY')
     llm = ChatOpenAI(model="gpt-3.5-turbo-16k", openai_api_key=api_key, temperature=0)
     model = initialize_model(llm=llm, options={'memory': 3})
+    model.load_schema_as_string("""
+        CREATE TABLE domains (
+            id INT PRIMARY KEY AUTO_INCREMENT,
+            name VARCHAR(255) NOT NULL
+        );
+        CREATE TABLE visitors (
+            id INT PRIMARY KEY AUTO_INCREMENT,
+            domain_id INT,
+            visit_date DATE,
+            country VARCHAR(100),
+            employee_count INT,
+            revenue DECIMAL(20, 2),
+            industry VARCHAR(255),
+            FOREIGN KEY (domain_id) REFERENCES domains(id)
+        );""")
 
     while True:
         user_input = input("Enter something (or type 'exit' to close): ")
@@ -21,7 +36,7 @@ def create_terminal_instance():
             break  # Exit the loop if the user types 'exit'
         else:
             output = model.predict(user_input)
-            print(output.message)
+            print(output.message + '\n')
 
 
 def run_test_suites():

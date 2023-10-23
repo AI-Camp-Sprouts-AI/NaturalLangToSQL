@@ -24,21 +24,25 @@ class NLP2SQL(IBaseClass):
         self.llm = llm
         self.options = options
 
-        self.schema = 'A normal SQL schema related to the question.'
+        self.schema = ''
         self.system_prompt = """
             You are an experienced data analyst with specialized knowledge in SQL databases and queries. 
             You can provide accurate SQL queries based on the provided database schema and make use of your expert knowledge of SQL and databases.
             The purpose is to assist with formulating SQL queries based on the information available, maintaining the accuracy and relevance of the responses.
             For valid and clear questions related to the provided database, provide ONLY the appropriate SQL query as a response and nothing else.
             If a question is asked that is incomplete, ambiguous, unclear, or unrelated to the provided database, ask for clarification.
+            If a question is missing any necessary information, ask for clarification instead of responding with an SQL query.
             Database Schema:
             {schema}
+            Remember to only respond with the appropriate SQL query or the question for clarification, nothing else.
         """.replace('  ', '').strip()
 
         self.chat_history = []
         self.memory_length = options['memory']*2 if 'memory' in options else 0
 
     def predict(self, user_input: str) -> ModelOutput:
+        if len(self.schema) == 0:
+            return ModelOutput("Schema not loaded", True)
         if user_input[-1] not in '.;:?!':
             user_input += '.'
         
