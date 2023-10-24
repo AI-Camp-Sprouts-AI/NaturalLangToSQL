@@ -93,5 +93,10 @@ def delete_records(table_name, specifiers=None):
     sql = f"DELETE FROM {table_name}" + ";" if specifiers==None else f"WHERE {specifiers};"
     cur.execute(sql)
 
-initialize_connection()
-fetch_and_print()
+# Check if table exists
+def exists(table_name):
+    sql = f"select * from information_schema.tables where table_name={table_name}"
+    cur.execute(sql)
+    return cur.fetchone()[0]
+
+initialize_connection() 
