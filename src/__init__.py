@@ -3,6 +3,7 @@ from langchain.chat_models import ChatOpenAI
 from dotenv import load_dotenv
 from os import getenv
 
+
 def create_terminal_instance():
     """
     Creates a terminal instance
@@ -12,23 +13,34 @@ def create_terminal_instance():
 
     load_dotenv()
     api_key = getenv('OPENAI_API_KEY')
-    llm = ChatOpenAI(model="gpt-3.5-turbo-16k", openai_api_key=api_key, temperature=0)
+    llm = ChatOpenAI(model="gpt-3.5-turbo-16k",
+                     openai_api_key=api_key, temperature=0)
     model = initialize_model(llm=llm, options={'memory': 3})
     model.load_schema_as_string("""
-        CREATE TABLE domains (
-            id INT PRIMARY KEY AUTO_INCREMENT,
-            name VARCHAR(255) NOT NULL
-        );
-        CREATE TABLE visitors (
-            id INT PRIMARY KEY AUTO_INCREMENT,
-            domain_id INT,
-            visit_date DATE,
-            country VARCHAR(100),
-            employee_count INT,
-            revenue DECIMAL(20, 2),
-            industry VARCHAR(255),
-            FOREIGN KEY (domain_id) REFERENCES domains(id)
-        );""")
+    CREATE TABLE WebsiteAggregates (
+        dt DATE,
+        customer_domain VARCHAR(255),
+        lead_domain VARCHAR(255),
+        ip_country VARCHAR(255),
+        no_of_visiting_ips BIGINT,
+        no_of_hits BIGINT,
+        lead_domain_name VARCHAR(255),
+        industry VARCHAR(255),
+        estimated_num_employees INT,
+        city VARCHAR(255),
+        state VARCHAR(255),
+        company_country VARCHAR(255),
+        annual_revenue FLOAT,
+        total_funding FLOAT,
+        latest_funding_stage VARCHAR(255),
+        status VARCHAR(255),
+        decayed_inbound_score DOUBLE,
+        decayed_intent_score DOUBLE,
+        decayed_clubbed_score DOUBLE,
+        last_visit_date DATE,
+        employee_range VARCHAR(255),
+        revenue_range VARCHAR(255)
+    );""")
 
     while True:
         user_input = input("Enter something (or type 'exit' to close): ")
@@ -42,10 +54,10 @@ def create_terminal_instance():
 def run_test_suites():
     """
     This function should use the testcase_runner.py module to run the testcases
-    
+
     This function should get inputs:
     1. List down all the test files for the user to select
-    
+
     """
     print("Run the test suites here...")
     # Call the testcase_runner file here
@@ -62,7 +74,7 @@ def create_mock_data():
     This function should get two inputs
     1. List down all the data structure files for the user to select
     2. Ask how many number of fake data has to be generated
-    
+
     """
     print("Create the mock data here...")
     # Call the mock_data_generator file here
