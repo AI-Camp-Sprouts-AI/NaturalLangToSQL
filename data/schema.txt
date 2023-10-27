@@ -1,24 +1,24 @@
 CREATE TABLE WebsiteAggregates (
-    dt DATE,
-    customer_domain VARCHAR(255),
+    dt DATE, -- Examples: 2022-01-01
+    customer_domain VARCHAR(255), -- Examples: republic.co, google.com, fb.com, ipsdev.com, rawk.co.nz
     lead_domain VARCHAR(255),
-    ip_country VARCHAR(255),
-    no_of_visiting_ips BIGINT,
-    no_of_hits BIGINT,
-    lead_domain_name VARCHAR(255),
-    industry VARCHAR(255),
-    estimated_num_employees INT,
-    city VARCHAR(255),
-    state VARCHAR(255),
-    company_country VARCHAR(255),
-    annual_revenue FLOAT,
-    total_funding FLOAT,
-    latest_funding_stage VARCHAR(255),
-    status VARCHAR(255),
-    decayed_inbound_score DOUBLE,
-    decayed_intent_score DOUBLE,
-    decayed_clubbed_score DOUBLE,
-    last_visit_date DATE,
-    employee_range VARCHAR(255),
-    revenue_range VARCHAR(255)
+    ip_country VARCHAR(255), -- Examples: NULL, India, New Zealand, United States
+    no_of_visiting_ips BIGINT, -- Examples: 1, 2, 3, 0
+    no_of_hits BIGINT, -- Examples: 1, 2, 3, 0
+    lead_domain_name VARCHAR(255), -- Examples: Bitmetric solutions, Republic investment company
+    industry VARCHAR(255), -- Examples: investment management, consumer services, hospitality
+    estimated_num_employees INT, -- Examples: NULL, 10, 1000, 3000
+    city VARCHAR(255), -- Examples: NULL, Mumbai, Pune, Bengaluru
+    state VARCHAR(255), -- Examples: maharashtra, Karnataka, Michigan
+    company_country VARCHAR(255), -- Examples: NULL, India, United STates, Pakistan
+    annual_revenue FLOAT, -- Examples: NULL, 12345, 444444, 222222222, 1200000
+    total_funding FLOAT, -- Examples: NULL, 12345, 444444, 222222222, 1200000
+    latest_funding_stage VARCHAR(255), -- Examples: Series E, Other, Seed, None, Equity Crowdfunding, Series F
+    status VARCHAR(255), -- Examples: NULL, Qualified, NA, Disqualified
+    decayed_inbound_score DOUBLE, -- Examples: <a number greater than 0 and also includes NULL>
+    decayed_intent_score DOUBLE, -- Examples: <a number greater than 0 and also includes NULL>
+    decayed_clubbed_score DOUBLE, -- Examples: <a number greater than 0 and also includes NULL>
+    last_visit_date DATE, -- Examples: 2022-01-01, NULL
+    employee_range VARCHAR(255), -- Examples: 251 - 500, 501 - 2000, NA, 26 - 100, <= 25, > 2000, 101 - 250
+    revenue_range VARCHAR(255) -- Examples: <= 100K, NA, 10M - 100M, > 100M, 100K - 1M, 1M - 10M
 );
