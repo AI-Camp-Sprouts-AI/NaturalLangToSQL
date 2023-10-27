@@ -37,6 +37,13 @@ class NLP2SQL(IBaseClass):
             Remember to only respond with the appropriate SQL query or the question for clarification, nothing else.
         """.replace('  ', '').strip()
 
+        self.review_prompt = """
+            You are to review the content provided. Your objective is clear:
+            If the content contains an SQL query, extract and present only that SQL query.
+            If the content does not contain any SQL query, respond with 'INVALID QUERY'.
+            Do not provide additional information or context. Stick strictly to the above guidelines.
+        """.replace('  ', '').strip()
+
         self.chat_history = []
         self.memory_length = options['memory']*2 if 'memory' in options else 0
 
@@ -49,6 +56,11 @@ class NLP2SQL(IBaseClass):
         system_prompt = self.system_prompt.format(schema=self.schema)
         messages = [SystemMessage(content=system_prompt), HumanMessage(content=user_input)]
         response = self.llm.predict_messages(messages=(self.chat_history + messages))
+
+        if 'review' in self.options and self.options['review']:
+            new_response = self.llm.predict_messages(messages=[SystemMessage(content=self.review_prompt), HumanMessage(content="Content:\n"+response.content)])
+            if 'INVALID' not in new_response.content:
+                response = new_response
 
         self.chat_history.append(HumanMessage(content=user_input))
         self.chat_history.append(AIMessage(content=response.content))

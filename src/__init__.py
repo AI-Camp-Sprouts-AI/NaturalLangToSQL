@@ -13,22 +13,8 @@ def create_terminal_instance():
     load_dotenv()
     api_key = getenv('OPENAI_API_KEY')
     llm = ChatOpenAI(model="gpt-3.5-turbo-16k", openai_api_key=api_key, temperature=0)
-    model = initialize_model(llm=llm, options={'memory': 3})
-    model.load_schema_as_string("""
-        CREATE TABLE domains (
-            id INT PRIMARY KEY AUTO_INCREMENT,
-            name VARCHAR(255) NOT NULL
-        );
-        CREATE TABLE visitors (
-            id INT PRIMARY KEY AUTO_INCREMENT,
-            domain_id INT,
-            visit_date DATE,
-            country VARCHAR(100),
-            employee_count INT,
-            revenue DECIMAL(20, 2),
-            industry VARCHAR(255),
-            FOREIGN KEY (domain_id) REFERENCES domains(id)
-        );""")
+    model = initialize_model(llm=llm, options={'memory': 3, 'review': True})
+    model.load_schema_from_file('data\schema.txt')
 
     while True:
         user_input = input("Enter something (or type 'exit' to close): ")
