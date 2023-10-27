@@ -1,4 +1,4 @@
-# Extremely basic SQL functions that haven't been tested
+# Functions to interact with postgreSQL database
 # Not sure if connection is properly maintained until end of application
 # If I understand correctly, Python will close it automatically at end so no need to close conn or cur
 # Please correct me if I'm (probably) wrong
