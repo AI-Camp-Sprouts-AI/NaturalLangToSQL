@@ -44,9 +44,9 @@ conn.autocommit = True
 # Create a cursor
 cur = conn.cursor()
 
-# Execute arbitrary PostgreSQL commands yourself
+# Main function we will be using
 def execute_command(command):
-    cur.execute(command)
+    return cur.execute(command)
 
 # Fetch all and print results
 def fetch_and_print():
