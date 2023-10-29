@@ -29,13 +29,12 @@ load_dotenv(find_dotenv())
 
 # Load credentials from .env file
 params = {
-  'dbname': os.environ.get('DB_NAME'),
-  'user': os.environ.get('USER'),
-  'password': os.environ.get('PASSWORD'),
-  'host': os.environ.get('HOST'),
-  'port': os.environ.get('PORT')
+  'dbname': os.environ.get("DB_NAME"),
+  'user': os.environ.get("USER"),
+  'password': os.environ.get("PASSWORD"),
+  'host': os.environ.get("HOST"),
+  'port': os.environ.get("PORT")
 }
-
 # Connect to the database
 conn = psycopg2.connect(**params)
 # Execute all statements without needing to call commit()
@@ -45,17 +44,17 @@ conn.autocommit = True
 cur = conn.cursor()
 
 # Main function we will be using
+# Basic, can do with refinement
 def execute_command(command):
-    cur.execute(command)
-
-# Fetch all and print results
-def fetch_and_print():
+    try:
+        cur.execute(command)
+    except Exception as e:
+        print(e)
     try:
         result = cur.fetchall()
-        print(result)
+        return result
     except:
-        print("No results")
-
+        print("Nothing to select")
 # Create new table with given column names
 # Include datatype following column name
 # Example: "COLUMN_NAME DATATYPE"
@@ -76,7 +75,7 @@ def drop_table(table_name):
 
 # Select columns by column name(s).
 # column_names is a list of column names to be retrieved
-# selectors is an optional dictionary where key-value is either a value to match against or a tuple
+# selectors is an optional dictionary where value in key-value is either a value to match against or a tuple
 # first element of tuple is the operator (<,>,!=,BETWEEN,IN,etc) and second element is value
 def select(table_name, column_names, selectors=None):
     with conn:
@@ -101,10 +100,11 @@ def select(table_name, column_names, selectors=None):
                         parameter = value
                     conditions.append(sql.Composed([sql.Identifier(key), sql.SQL(operator), sql.Placeholder()]))
                     parameters.append(parameter)
+
                 conditions = sql.SQL(" AND ").join(conditions)
                 query = query + sql.SQL(" WHERE {conditions}").format(conditions=conditions)
 
-            cursor.execute(query, list(selectors.values()) if selectors else None)
+            cursor.execute(query, parameters if selectors else None)
             results = cursor.fetchall()
 
             return [dict(zip(column_names, row)) for row in results]
@@ -123,8 +123,7 @@ def insert_records(table_name, records):
             cursor.executemany(query, [list(record.values()) for record in records])
 
 # Delete records from an existing table
-# selectors is a dictionary where values of key-value is the value to match against
-# or a tuple where the first element is an operator (<,>,!=,BETWEEN, IN, etc) and the second is what to evaluate
+# selectors is a dictionary where values of key-value is the value to match against or a tuple where the first element is an operator (<,>,!=,BETWEEN, IN, etc) and the second is what to evaluate
 # If selector is omitted, delete all records
 def delete_records(table_name, selectors=None):
     with conn:
