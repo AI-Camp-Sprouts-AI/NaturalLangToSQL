@@ -1,5 +1,15 @@
 from .main import initialize_model
 from langchain.llms import OpenAI
+from dotenv import load_dotenv
+
+import os
+
+load_dotenv()   # Load the .env file
+
+# Environment Variables
+API_KEY = os.environ.get('API_KEY')
+
+print(API_KEY)
 
 
 def create_terminal_instance():
@@ -8,7 +18,7 @@ def create_terminal_instance():
     1. Mimics the exact scenario in which the user will use this package
     """
     print("Creating a Terminal Instance for testing in dev environment...")
-    # llm = OpenAI(openai_api_key="sk-...")
+    # llm = OpenAI(openai_api_key=f"{API_KEY}")
     # model = initialize_model(llm=llm)
     while True:
         user_input = input("Enter something (or type 'exit' to close): ")
@@ -19,6 +29,23 @@ def create_terminal_instance():
             print("Output will be shown here: ")
     pass
 
+"""
+4. Create a function which takes the input and output from these testcases and outputs the accuracy of the model. This testing function has to be written here (run_test_suites()
+5. The answer generated must be vetted for accuracy (reruns must provide the same result). Publish the accuracy.
+
+# Function to calculate accuracy
+def calculate_accuracy(test_cases):
+    correct = 0
+    for test_case in test_cases:
+        if test_case['output'] == test_case['sql_output']:
+            correct += 1
+    accuracy = correct / len(test_cases) * 100
+    return accuracy
+
+# Calculate accuracy
+accuracy = calculate_accuracy(test_cases)
+print(f"Accuracy: {accuracy:.2f}%")
+"""
 
 def run_test_suites():
     """
@@ -30,7 +57,7 @@ def run_test_suites():
     """
     print("Run the test suites here...")
     # Call the testcase_runner file here
-
+    
 
 def create_mock_data():
     """
