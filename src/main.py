@@ -79,6 +79,9 @@ class NLP2SQL(IBaseClass):
         if '{schema}' in new_system_prompt:
             self.system_prompt = new_system_prompt
 
+    def override_review_prompt(self, new_review_prompt: str) -> None:
+        self.review_prompt = new_review_prompt
+
     def load_schema_from_file(self, file_path: str) -> bool:
         with open(file_path, 'r', encoding='utf-8') as file:
             contents = file.read()
@@ -86,6 +89,9 @@ class NLP2SQL(IBaseClass):
 
     def load_schema_as_string(self, schema: str) -> bool:
         self.schema = schema
+
+    def clear_chat_history(self) -> None:
+        self.chat_history = []
 
 # Can be implemented later
 
