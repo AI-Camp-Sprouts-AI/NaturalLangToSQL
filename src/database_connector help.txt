@@ -89,7 +89,7 @@ If something goes wrong, such as a table already exists or an invalid data type,
 
 - Example:
 
-Create a table named table_2 with columnss name, age, and country
+Create a table named table_2 with columns name, age, and country
 create_table("table_2", "name varchar(255), age int, country varchar(3)")
 
 ------------------Deleting a table------------------
@@ -148,7 +148,7 @@ print(result)
 Select records from the name and age column from table_2 where the country is the US
 columns = ["name", "age"]
 selectors = {"country":"US"}
-result = select("test1", columns, selectors)
+result = select("table_2", columns, selectors)
 print(result)
 >> [{'name':'a name', 'age':'number'}, ...]
 
@@ -180,7 +180,7 @@ records = [
 			{"name":"John","age":"29","country":"US"},
 			{"name":"Jane","age":"24","country":"CA"}
 		  ]
-insert_records("test1", records)
+insert_records("table_2", records)
 
 ------------------Dropping records------------------
 
