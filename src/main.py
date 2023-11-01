@@ -37,12 +37,21 @@ class NLP2SQL(IBaseClass):
             Remember to only respond with the appropriate SQL query or the question for clarification, nothing else.
         """.replace('  ', '').strip()
 
+        self.review_prompt = """
+            You are to review the content provided. Your objective is clear:
+            If the content contains an SQL query, extract and present only that SQL query.
+            If the content does not contain any SQL query, respond with 'INVALID QUERY'.
+            Do not provide additional information or context. Stick strictly to the above guidelines.
+        """.replace('  ', '').strip()
+
         self.chat_history = []
         self.memory_length = options['memory']*2 if 'memory' in options else 0
 
     def predict(self, user_input: str) -> ModelOutput:
         if len(self.schema) == 0:
             return ModelOutput("Schema not loaded", True)
+        if len(user_input) == 0:
+            return ModelOutput("I'm sorry, I don't understand your question.", False)
         if user_input[-1] not in '.;:?!':
             user_input += '.'
 
@@ -52,17 +61,28 @@ class NLP2SQL(IBaseClass):
         response = self.llm.predict_messages(
             messages=(self.chat_history + messages))
 
+        final_output = False
+
+        if 'review' in self.options and self.options['review']:
+            new_response = self.llm.predict_messages(messages=[SystemMessage(content=self.review_prompt), HumanMessage(content="Content:\n"+response.content)])
+            if 'INVALID' not in new_response.content:
+                final_output = True
+                response = new_response
+
         self.chat_history.append(HumanMessage(content=user_input))
         self.chat_history.append(AIMessage(content=response.content))
         if len(self.chat_history) > self.memory_length:
             excess = len(self.chat_history) - self.memory_length
             self.chat_history = self.chat_history[excess:]
 
-        return ModelOutput(response.content, True)
+        return ModelOutput(response.content, final_output)
 
     def override_system_prompt(self, new_system_prompt: str) -> None:
         if '{schema}' in new_system_prompt:
             self.system_prompt = new_system_prompt
+
+    def override_review_prompt(self, new_review_prompt: str) -> None:
+        self.review_prompt = new_review_prompt
 
     def load_schema_from_file(self, file_path: str) -> bool:
         with open(file_path, 'r', encoding='utf-8') as file:
@@ -71,6 +91,9 @@ class NLP2SQL(IBaseClass):
 
     def load_schema_as_string(self, schema: str) -> bool:
         self.schema = schema
+
+    def clear_chat_history(self) -> None:
+        self.chat_history = []
 
 # Can be implemented later
 

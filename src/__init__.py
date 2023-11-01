@@ -15,32 +15,8 @@ def create_terminal_instance():
     api_key = getenv('OPENAI_API_KEY')
     llm = ChatOpenAI(model="gpt-3.5-turbo-16k",
                      openai_api_key=api_key, temperature=0)
-    model = initialize_model(llm=llm, options={'memory': 3})
-    model.load_schema_as_string("""
-    CREATE TABLE WebsiteAggregates (
-        dt DATE,
-        customer_domain VARCHAR(255),
-        lead_domain VARCHAR(255),
-        ip_country VARCHAR(255),
-        no_of_visiting_ips BIGINT,
-        no_of_hits BIGINT,
-        lead_domain_name VARCHAR(255),
-        industry VARCHAR(255),
-        estimated_num_employees INT,
-        city VARCHAR(255),
-        state VARCHAR(255),
-        company_country VARCHAR(255),
-        annual_revenue FLOAT,
-        total_funding FLOAT,
-        latest_funding_stage VARCHAR(255),
-        status VARCHAR(255),
-        decayed_inbound_score DOUBLE,
-        decayed_intent_score DOUBLE,
-        decayed_clubbed_score DOUBLE,
-        last_visit_date DATE,
-        employee_range VARCHAR(255),
-        revenue_range VARCHAR(255)
-    );""")
+    model = initialize_model(llm=llm, options={'memory': 3, 'review': True})
+    model.load_schema_from_file('data\schema.txt')
 
     while True:
         user_input = input("Enter something (or type 'exit' to close): ")
