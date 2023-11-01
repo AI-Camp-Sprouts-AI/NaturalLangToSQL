@@ -23,7 +23,6 @@ Natural Language Inputs:
 -- How many total visitors have visited this domain whose industry is <insert industry> ? 
 -- How many <insert some measure> have visited this domain whose <some other condition> ? 
 
-​
 
 
 Note: This is not an exhaustive list of all the queries, if you feel there might be some more type of queries, add those too.

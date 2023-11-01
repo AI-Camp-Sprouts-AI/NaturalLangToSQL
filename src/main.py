@@ -45,10 +45,12 @@ class NLP2SQL(IBaseClass):
             return ModelOutput("Schema not loaded", True)
         if user_input[-1] not in '.;:?!':
             user_input += '.'
-        
+
         system_prompt = self.system_prompt.format(schema=self.schema)
-        messages = [SystemMessage(content=system_prompt), HumanMessage(content=user_input)]
-        response = self.llm.predict_messages(messages=(self.chat_history + messages))
+        messages = [SystemMessage(content=system_prompt),
+                    HumanMessage(content=user_input)]
+        response = self.llm.predict_messages(
+            messages=(self.chat_history + messages))
 
         self.chat_history.append(HumanMessage(content=user_input))
         self.chat_history.append(AIMessage(content=response.content))
