@@ -8,7 +8,8 @@ setup(
         'langchain',
         'langchain-experimental',
         'openai',
-        'python-dotenv'
+        'python-dotenv',
+        'faker'
     ],
     entry_points="""
     [console_scripts]
