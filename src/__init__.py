@@ -51,6 +51,25 @@ def create_terminal_instance():
             print(output.message + '\n')
 
 
+"""
+4. Create a function which takes the input and output from these testcases and outputs the accuracy of the model. This testing function has to be written here (run_test_suites()
+5. The answer generated must be vetted for accuracy (reruns must provide the same result). Publish the accuracy.
+
+# Function to calculate accuracy
+def calculate_accuracy(test_cases):
+    correct = 0
+    for test_case in test_cases:
+        if test_case['output'] == test_case['sql_output']:
+            correct += 1
+    accuracy = correct / len(test_cases) * 100
+    return accuracy
+
+# Calculate accuracy
+accuracy = calculate_accuracy(test_cases)
+print(f"Accuracy: {accuracy:.2f}%")
+"""
+
+
 def run_test_suites():
     """
     This function should use the testcase_runner.py module to run the testcases
