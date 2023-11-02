@@ -1,4 +1,4 @@
-CREATE TABLE WebsiteAggregates (
+CREATE TABLE website_aggregates (
     dt DATE,
     customer_domain VARCHAR(255),
     lead_domain VARCHAR(255),

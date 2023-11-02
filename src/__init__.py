@@ -1,7 +1,21 @@
-from .main import initialize_model
-from langchain.chat_models import ChatOpenAI
-from dotenv import load_dotenv
+import re
+import importlib
 from os import getenv
+from dotenv import load_dotenv
+from InquirerPy import inquirer
+from InquirerPy.base.control import Choice
+from pathlib import Path
+from glob import glob
+
+
+from .main import initialize_model
+from .utils import filename_to_tablename
+from .mock_data_generator import add_mock_data_to_db
+from langchain.chat_models import ChatOpenAI
+
+CWD = Path(__file__).parent
+
+PATH_TO_FAKE_DATASTRUCTURES = CWD.joinpath('../data/fake_data_structures')
 
 
 def create_terminal_instance():
@@ -9,14 +23,12 @@ def create_terminal_instance():
     Creates a terminal instance
     1. Mimics the exact scenario in which the user will use this package
     """
-    print("Creating a Terminal Instance for testing in dev environment...")
-
     load_dotenv()
     api_key = getenv('OPENAI_API_KEY')
     llm = ChatOpenAI(model="gpt-3.5-turbo-16k",
                      openai_api_key=api_key, temperature=0)
     model = initialize_model(llm=llm, options={'memory': 3, 'review': True})
-    model.load_schema_from_file('data\schema.txt')
+    model.load_schema_from_file(CWD.joinpath('../data/schema.txt').absolute())
 
     while True:
         user_input = input("Enter something (or type 'exit' to close): ")
@@ -70,5 +82,37 @@ def create_mock_data():
     2. Ask how many number of fake data has to be generated
 
     """
-    print("Create the mock data here...")
-    # Call the mock_data_generator file here
+    def create_choices(filename):
+        display_name = filename_to_tablename(filename)
+        output = (
+            display_name,
+            re.sub(r'(^\./|\.py$)', '', filename)
+        )
+        return Choice(
+            name=display_name,
+            value=output
+        )
+    fake_data_files = glob(
+        './*.py', root_dir=PATH_TO_FAKE_DATASTRUCTURES.absolute())
+    (table_name, module_name) = inquirer.rawlist(
+        message="Choose the Table Name",
+        choices=map(create_choices, fake_data_files)
+    ).execute()
+    num_of_fake_data_to_generate = int(inquirer.number(
+        message="Enter the number of fake data to generate: ",
+        min_allowed=1,
+    ).execute())
+
+    full_module_name = f'data.fake_data_structures.{module_name}'
+
+    try:
+        module = importlib.import_module(full_module_name)
+        output = module.main()
+    except ModuleNotFoundError:
+        print(f"Module '{full_module_name}' not found.")
+
+    column_blueprint = output.get('column_blueprint')
+    fake_data_structure = output.get('fake_data_structure')
+
+    add_mock_data_to_db(table_name, column_blueprint,
+                        fake_data_structure, num_of_fake_data_to_generate)
