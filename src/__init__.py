@@ -7,7 +7,7 @@ from InquirerPy.base.control import Choice
 from pathlib import Path
 from glob import glob
 
-
+from .database_connector import execute_command
 from .main import initialize_model
 from .utils import filename_to_tablename
 from .mock_data_generator import add_mock_data_to_db
@@ -36,7 +36,9 @@ def create_terminal_instance():
             break  # Exit the loop if the user types 'exit'
         else:
             output = model.predict(user_input)
-            print(output.message + '\n')
+            print("SQL Query : ", output.message + '\n')
+            print("Output : ", execute_command(output.message))
+            print('-'*80)
 
     """
     4. Create a function which takes the input and output from these testcases and outputs the accuracy of the model. This testing function has to be written here (run_test_suites()
