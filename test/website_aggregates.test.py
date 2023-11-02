@@ -31,7 +31,7 @@ Note: This is not an exhaustive list of all the queries, if you feel there might
 test_cases = [
     {
         'input': "How many total visitors have visited this domain?",
-        'output': "Total visitors: <number>",
+        'output': "7105",
         'sql_output': "SELECT COUNT(*) FROM visitors;",
         'description': "Simple count of total visitors."
     },

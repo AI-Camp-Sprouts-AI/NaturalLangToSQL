@@ -12,7 +12,6 @@ Here the schema of the table from client has to be pasted
 import random
 import sys
 from faker import Faker
-from collections import namedtuple
 
 from src.mock_data_generator import add_mock_data_to_db
 
