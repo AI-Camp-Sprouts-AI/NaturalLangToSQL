@@ -39,7 +39,7 @@ test_cases = [
     {
         'input': "How many total visitors have visited this domain in the last 7 days?",
         'output': "Visitors in the last 7 days: <number>",
-        'sql_output': "SELECT SUM(no_of_visiting_ups) FROM website aggregates WHERE dt >= current_date - INTERVAL '7 days';",
+        'sql_output': "SELECT SUM(no_of_visiting_ips) FROM website aggregates WHERE dt >= current_date - INTERVAL '7 days';",
         'description': "Total count of visitors in the last 7 days."
     },
     {
