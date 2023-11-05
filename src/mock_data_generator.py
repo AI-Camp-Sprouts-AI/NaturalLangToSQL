@@ -26,8 +26,7 @@ from src.database_connector import check_exists
 
         complete_fake_value.append(fake_data)
 
-    adding this created 'complete_fake_value' to the database
-    For this you will be using a function called 'insert_rows'
+6. Add this created 'complete_fake_value' to the database, For this you will be using a function called 'insert_rows'
         
-        
+"""
 
