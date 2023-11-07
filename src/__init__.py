@@ -27,7 +27,7 @@ def create_terminal_instance():
     llm = ChatOpenAI(model="gpt-3.5-turbo-16k",
                      openai_api_key=api_key, temperature=0)
     model = initialize_model(llm=llm, options={'memory': 3, 'review': True})
-    model.load_schema_from_file(CWD.joinpath('../data/schema.txt').absolute())
+    model.load_schema_from_file(CWD.joinpath('../data/schemas/website_aggregates.txt').absolute())
 
     while True:
         user_input = input("Enter something (or type 'exit' to close): ")
