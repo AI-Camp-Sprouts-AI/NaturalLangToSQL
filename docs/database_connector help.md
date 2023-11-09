@@ -51,7 +51,7 @@ If something goes wrong, such as a syntax error or a connection error, it prints
 
 - Example:  
 Create a new table named table_1 with columns name, age, and country  
-`execute_command("CREATE TABLE table_1 (name varchar(255), age int, country varchar(3))")`
+`execute_command("CREATE TABLE table_1 (name varchar(255), age int, country varchar(3))")`  
 Select the names from table_1 where age is greater than 30  
 `result = execute_command("SELECT name FROM table_1 WHERE age > 30")`  
 `print(result)`  
