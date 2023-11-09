@@ -1,5 +1,7 @@
 import re
 import importlib
+import pytest
+
 from os import getenv
 from dotenv import load_dotenv
 from InquirerPy import inquirer
@@ -15,6 +17,7 @@ from langchain.chat_models import ChatOpenAI
 CWD = Path(__file__).parent
 
 PATH_TO_FAKE_DATASTRUCTURES = CWD.joinpath('../data/fake_data_structures')
+PATH_TO_TEST_SUITES = CWD.joinpath('../tests/')
 
 
 def create_terminal_instance():
@@ -69,9 +72,19 @@ def run_test_suites():
     1. List down all the test files for the user to select
 
     """
-    print("Run the test suites here...")
-    # Call the testcase_runner file here
 
+    test_files = glob(
+        './**/*_test.py', root_dir=PATH_TO_TEST_SUITES.absolute())
+    test_suite = inquirer.rawlist(
+        message="Choose the Test file",
+        choices=[
+            re.sub(r'(^\./)', '', filename) for filename in test_files
+        ]
+    ).execute()
+    
+    complete_file_path = PATH_TO_TEST_SUITES.joinpath(test_suite).absolute()
+
+    pytest.main(['-v', '-s', complete_file_path])
 
 def create_mock_data():
     """

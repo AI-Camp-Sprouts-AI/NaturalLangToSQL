@@ -14,7 +14,8 @@ setup(
     ],
     extras_require = {
         'dev': [
-            'InquirerPy'
+            'InquirerPy',
+            'pytest'
         ]
     }
     entry_points="""

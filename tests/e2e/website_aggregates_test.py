@@ -28,6 +28,8 @@ Natural Language Inputs:
 Note: This is not an exhaustive list of all the queries, if you feel there might be some more type of queries, add those too.
 """
 
+import pytest
+
 test_cases = [
     {
         'input': "How many total visitors have visited this domain?",
@@ -88,5 +90,8 @@ test_cases = [
         'output': "<Some measure> meeting the specified condition: <number>",
         'sql_output': "SELECT COUNT(*) FROM visitors WHERE <some_other_condition>;",
         'description': "Count of a specific measure meeting a condition."
-    },
+    }
 ]
+
+def test_accuracy():
+    
