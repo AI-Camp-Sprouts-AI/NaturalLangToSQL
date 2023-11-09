@@ -8,8 +8,15 @@ setup(
         'langchain',
         'langchain-experimental',
         'openai',
-        'python-dotenv'
+        'python-dotenv',
+        'faker',
+        'psycopg2'
     ],
+    extras_require = {
+        'dev': [
+            'InquirerPy'
+        ]
+    }
     entry_points="""
     [console_scripts]
         text2query-example=src:create_terminal_instance

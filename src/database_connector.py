@@ -30,11 +30,12 @@ load_dotenv(find_dotenv())
 # Load credentials from .env file
 params = {
   'dbname': os.environ.get("DB_NAME"),
-  'user': os.environ.get("USER"),
+  'user': os.environ.get("USERNAME"),
   'password': os.environ.get("PASSWORD"),
   'host': os.environ.get("HOST"),
   'port': os.environ.get("PORT")
 }
+
 # Connect to the database
 conn = psycopg2.connect(**params)
 # Execute all statements without needing to call commit()
@@ -154,7 +155,7 @@ def delete_records(table_name, selectors=None):
             return count
 
 # Check if table exists
-def exists(table_name):
+def check_exists(table_name):
     with conn:
         with conn.cursor() as cursor:
             table = sql.Literal(table_name)
