@@ -56,7 +56,7 @@ Create a new table named table_1 with columns name, age, and country
 Select the names from table_1 where age is greater than 30  
 `result = execute_command("SELECT name FROM table_1 WHERE age > 30")`  
 `print(result)`  
->> []
+\>\> []
 
 ### Creating a table
 
@@ -120,14 +120,14 @@ Select records from the name and country column from table_2 where age is less t
 `selectors = {"age":("<", 30)}`  
 `result = select("table_2", columns, selectors)`  
 `print(result)`  
->> [{'name':'a name', 'country':'ABC'}, ...]
+\>\> [{'name':'a name', 'country':'ABC'}, ...]
 
 Select records from the name and age column from table_2 where the country is the US  
 `columns = ["name", "age"]`  
 `selectors = {"country":"US"}`  
 `result = select("table_2", columns, selectors)`  
 `print(result)`  
->> [{'name':'a name', 'age':'number'}, ...]
+\>\> [{'name':'a name', 'age':'number'}, ...]
 
 ### Inserting records
 
@@ -199,8 +199,8 @@ If something goes wrong, such as a connection error or an invalid table name, it
 - Example:  
 Check if table_1 exists  
 `print(exists("table_1"))`  
->> False
+\>\> False
 
 Check if table_2 exists  
 `print(exists("table_2"))`  
->> True
+\>\> True
