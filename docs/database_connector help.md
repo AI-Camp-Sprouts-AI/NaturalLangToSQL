@@ -20,17 +20,16 @@ Refer to platform-specific instructions for installing Python on your machine.
 If you don't already have it, run `pip install psycopg2` or `pip install psycopg2-binary`  
 You may have to replace `pip` with `pip3` if the former does not work.
 
-3a. **Obtain access to a PostgreSQL server**  
+3. a. **Obtain access to a PostgreSQL server**  
 These functions were designed specifically around Supabase's hosted database. You may need to alter the connection details to fit your needs.
 
-3b. **Obtain connection details**  
+3. b. **Obtain connection details**  
 If you are using a PostgreSQL database hosted by Supabase, you'll need the database name, username, password, hostname, and port (optional) to connect to the database.  
 It is recommended that you keep these details secret by placing them in a hidden .env file in the same directory.
 
 4. **Import the functions**  
 Import the functions like you would import anything else in Python, by placing this line at the top of your file: `import database_connector`.  
-If you are experiencing difficulties with importing, try this instead:
-
+If you are experiencing difficulties with importing, try this instead:  
 `import os, sys`  
 `sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))`  
 `from database_connector import *`  
@@ -119,8 +118,7 @@ Select records from the name and country column from table_2 where age is less t
 `selectors = {"age":("<", 30)}`  
 `result = select("table_2", columns, selectors)`  
 `print(result)`  
-\>\> [{'name':'a name', 'country':'ABC'}, ...]
-
+\>\> [{'name':'a name', 'country':'ABC'}, ...]  
 Select records from the name and age column from table_2 where the country is the US  
 `columns = ["name", "age"]`  
 `selectors = {"country":"US"}`  
@@ -175,8 +173,7 @@ Delete records from table_2 where age is less than 20
 
 Delete records where name is John  
 `selectors = {"name":"John"}`  
-`delete_records("table_2", selectors)`
-
+`delete_records("table_2", selectors)`  
 Delete all records from table_2  
 `delete_records("table_2")`
 
@@ -198,8 +195,7 @@ If something goes wrong, such as a connection error or an invalid table name, it
 - Example:  
 Check if table_1 exists  
 `print(exists("table_1"))`  
-\>\> False
-
+\>\> False  
 Check if table_2 exists  
 `print(exists("table_2"))`  
 \>\> True
