@@ -26,3 +26,4 @@ CREATE TABLE website_aggregates (
 
 NOTE:
 1. if the user just mentions as domain, take it as customer_domain
+2. if the country name is abbreviated, modify it as complete country name
