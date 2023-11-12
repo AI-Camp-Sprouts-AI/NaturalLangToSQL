@@ -135,17 +135,17 @@ testcases = [
     }
 ]
 
-print(execute_command(
-    """
-            SELECT
-                SUM(no_of_visiting_ips) AS total_visitors
-            FROM
-                website_aggregates
-            WHERE
-                customer_domain = 'alphabet.com'
-                AND ip_country = 'United States'
-        """
-))
+# print(execute_command(
+#     """
+#             SELECT
+#                 SUM(no_of_visiting_ips) AS total_visitors
+#             FROM
+#                 website_aggregates
+#             WHERE
+#                 customer_domain = 'alphabet.com'
+#                 AND ip_country = 'United States'
+#         """
+# ))
 
 
 def check(value, expected, info=''):
