@@ -20,7 +20,7 @@ import csv
 def run_testcases():
     load_dotenv()
     openai_api_key = getenv('OPENAI_API_KEY')
-    llm = ChatOpenAI(model="gpt-4",#"gpt-3.5-turbo-16k",
+    llm = ChatOpenAI(model="gpt-3.5-turbo-16k",
                      openai_api_key=openai_api_key, temperature=0)
     model = initialize_model(llm=llm, options={'memory': 0, 'review': True})
     
@@ -59,6 +59,9 @@ def run_testcases():
         else:
             print("Failed Test: " + summary)
 
+        if i >= 10:
+            break
+
 
         outputs.append({
             'pass': test_pass,
@@ -71,6 +74,8 @@ def run_testcases():
             'correct_query_data': correct_data,
             'model_query_data': model_data
         })
+
+    print(str(passed / len(outputs) * 100) + "% Pass Rate")
 
     for data in outputs:
         for key in data:

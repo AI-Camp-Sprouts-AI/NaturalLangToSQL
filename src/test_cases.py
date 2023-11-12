@@ -191,7 +191,7 @@ test_cases = [
         'correct_query': "SELECT industry, AVG(annual_revenue) AS avg_revenue FROM website_aggregates GROUP BY industry ORDER BY avg_revenue DESC LIMIT 3;",
         'valid_prompt': True
     },
-# COMPLEX QUERIES
+    # COMPLEX QUERIES
     {
         'summary': "Testing a combination of JOIN and subquery",
         'prompt': "Can you show me the customer domains and the average number of hits for each, but only for those customers who had visits on or after January 1, 2023?",
