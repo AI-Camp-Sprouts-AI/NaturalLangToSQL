@@ -90,7 +90,7 @@ def run_test_suites():
 
     complete_file_path = PATH_TO_TEST_SUITES.joinpath(test_suite).absolute()
 
-    pytest.main(['-v', '-s', complete_file_path])
+    pytest.main(['-v', '--continue-on-collection-errors', '-s', complete_file_path])
 
 
 def create_mock_data():
