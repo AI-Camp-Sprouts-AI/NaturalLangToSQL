@@ -9,13 +9,70 @@ Here the schema of the table from client has to be pasted
     
 """
 
-import random
-import sys
+from src.utils import generate_double_in_range, \
+    generate_float_in_range, \
+    generate_int_in_range, \
+    generate_int_range, \
+    generate_rand_from_choices, \
+    generate_rand_null_with_prob, \
+    get_structure_for_faker, \
+    generate_date_between, \
+    get_table_blueprint
+
 from faker import Faker
+from datetime import datetime, timedelta
 
 from src.mock_data_generator import add_mock_data_to_db
 
 fake = Faker()
+
+# Customer Domains
+customer_domains = [
+    "google.com",
+    "yahoo.com",
+    "tesla.com",
+    "facebook.com",
+    "twitter.com",
+    "boeing.com",
+    "southwest.com",
+    "meta.com",
+    "bing.com",
+    "microsoft.com",
+    "apple.com",
+    "hyundai.com",
+    "toyota.com",
+    "bmw.com",
+    "mercedes.com",
+    "samsung.com",
+    "kuka.com",
+    "alphabet.com",
+    "brave.com",
+    "openai.com"
+]
+
+# Lead Domains
+lead_domains = [
+    "google.com",
+    "yahoo.com",
+    "tesla.com",
+    "facebook.com",
+    "twitter.com",
+    "boeing.com",
+    "southwest.com",
+    "meta.com",
+    "bing.com",
+    "microsoft.com",
+    "apple.com",
+    "hyundai.com",
+    "toyota.com",
+    "bmw.com",
+    "mercedes.com",
+    "samsung.com",
+    "kuka.com",
+    "alphabet.com",
+    "brave.com",
+    "openai.com"
+]
 
 funding_stage_choices = [
     "Series E",
@@ -62,53 +119,14 @@ status_choices = [
     "NULL"
 ]
 
-
-def generate_rand_null_with_prob(generator, null_probability=0.5):
-    weights = [1 - null_probability, null_probability]
-    return lambda: random.choices([generator(), None], weights=weights, k=1)[0]
-
-
-def generate_int_in_range(start=0, end=sys.maxsize):
-    return lambda: random.randint(start, end)
-
-
-def generate_float_in_range(start=0, end=sys.maxsize):
-    return lambda: round(random.uniform(start, end), 2)
-
-
-def generate_rand_from_choices(choices):
-    return lambda: random.choice(choices)
-
-
-def generate_double_in_range(start=0, end=sys.maxsize):
-    return lambda: round(random.uniform(start, end), 4)
-
-
-def generate_int_range(start=0, end=sys.maxsize):
-    def generate_range():
-        range_start = random.randint(start, end)
-        range_end = random.randint(range_start, end)
-        return f'{range_start} - {range_end}'
-    return generate_range
-
-
-def get_table_blueprint(data_structure):
-    return ', '.join([
-        f'{key} {data_structure[key][0]}' for key in data_structure.keys()
-    ])
-
-
-def get_structure_for_faker(data_structure):
-    return {
-        key: data_structure[key][1] for key in data_structure.keys()
-    }
+start_date = datetime.now().date() - timedelta(days=30)
 
 
 def main():
     data_structure = {
-        'dt': ('DATE', fake.date),
-        'customer_domain': ('VARCHAR(255)', fake.domain_name),
-        'lead_domain': ('VARCHAR(255)', fake.domain_name),
+        'dt': ('DATE', generate_date_between(start_date)),
+        'customer_domain': ('VARCHAR(255)', generate_rand_from_choices(customer_domains)),
+        'lead_domain': ('VARCHAR(255)', generate_rand_from_choices(lead_domains)),
         'ip_country': ('VARCHAR(255)', generate_rand_null_with_prob(fake.country, 0.05)),
         'no_of_visiting_ips': ('BIGINT', generate_int_in_range(0, 10000)),
         'no_of_hits': ('BIGINT', generate_int_in_range(0, 100)),

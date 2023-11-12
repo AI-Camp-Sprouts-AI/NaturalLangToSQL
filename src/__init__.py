@@ -1,9 +1,10 @@
 import re
 import importlib
+import pytest
+
 from os import getenv
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 from InquirerPy import inquirer
-from InquirerPy.base.control import Choice
 from pathlib import Path
 from glob import glob
 
@@ -16,6 +17,16 @@ from langchain.chat_models import ChatOpenAI
 CWD = Path(__file__).parent
 
 PATH_TO_FAKE_DATASTRUCTURES = CWD.joinpath('../data/fake_data_structures')
+PATH_TO_TEST_SUITES = CWD.joinpath('../tests/')
+
+
+def create_model():
+    load_dotenv(find_dotenv())
+    api_key = getenv('OPENAI_API_KEY')
+    llm = ChatOpenAI(model="gpt-3.5-turbo-16k",
+                     openai_api_key=api_key, temperature=0)
+    model = initialize_model(llm=llm, options={'memory': 3, 'review': True})
+    return model
 
 
 def create_terminal_instance():
@@ -23,12 +34,10 @@ def create_terminal_instance():
     Creates a terminal instance
     1. Mimics the exact scenario in which the user will use this package
     """
-    load_dotenv()
-    api_key = getenv('OPENAI_API_KEY')
-    llm = ChatOpenAI(model="gpt-3.5-turbo-16k",
-                     openai_api_key=api_key, temperature=0)
-    model = initialize_model(llm=llm, options={'memory': 3, 'review': True})
-    model.load_schema_from_file(CWD.joinpath('../data/schemas/website_aggregates.txt').absolute())
+
+    model = create_model()
+    model.load_schema_from_file(CWD.joinpath(
+        '../data/schemas/website_aggregates.txt').absolute())
 
     while True:
         user_input = input("Enter something (or type 'exit' to close): ")
@@ -70,9 +79,19 @@ def run_test_suites():
     1. List down all the test files for the user to select
 
     """
-    print("Running test suites...")
-    run_testcases()
-    # Call the testcase_runner file here
+
+    test_files = glob(
+        './**/*_test.py', root_dir=PATH_TO_TEST_SUITES.absolute())
+    test_suite = inquirer.rawlist(
+        message="Choose the Test file",
+        choices=[
+            re.sub(r'(^\./)', '', filename) for filename in test_files
+        ]
+    ).execute()
+
+    complete_file_path = PATH_TO_TEST_SUITES.joinpath(test_suite).absolute()
+
+    pytest.main(['-v', '-s', complete_file_path])
 
 
 def create_mock_data():

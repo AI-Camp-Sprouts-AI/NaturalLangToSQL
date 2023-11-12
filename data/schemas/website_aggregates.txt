@@ -22,3 +22,8 @@ CREATE TABLE website_aggregates (
     employee_range VARCHAR(255),
     revenue_range VARCHAR(255)
 );
+
+
+NOTE:
+1. if the user just mentions as domain, take it as customer_domain
+2. if the country name is abbreviated, modify it as complete country name
