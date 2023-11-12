@@ -10,6 +10,7 @@ from glob import glob
 from .database_connector import execute_command
 from .main import initialize_model
 from .mock_data_generator import add_mock_data_to_db
+from .testcase_runner import run_testcases
 from langchain.chat_models import ChatOpenAI
 
 CWD = Path(__file__).parent
@@ -69,7 +70,8 @@ def run_test_suites():
     1. List down all the test files for the user to select
 
     """
-    print("Run the test suites here...")
+    print("Running test suites...")
+    run_testcases()
     # Call the testcase_runner file here
 
 
