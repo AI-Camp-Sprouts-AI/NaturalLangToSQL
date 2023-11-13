@@ -1,14 +1,3 @@
-"""
-Here the schema of the table from client has to be pasted
----
-
-**TABLE NAME** Website Aggregates
-
-**Schema**
-    column_name : data_type
-    
-"""
-
 import random
 import sys
 from faker import Faker
@@ -37,22 +26,8 @@ funding_stage_choices = [
     "Series B"
 ]
 
-industry_choices = [
-    "financial services",
-    "healthcare",
-    "retail",
-    "manufacturing",
-    "education",
-    "media and entertainment",
-    "real estate",
-    "automotive",
-    "energy",
-    "telecommunications",
-    "food and beverage",
-    "sports and recreation",
-    "fashion",
-    "agriculture",
-    "construction"
+Department_choices = [
+    'Sales', 'Marketing', 'Finance', 'Human Resources', 'IT', 'customer service', 'Operations'
 ]
 
 status_choices = [
@@ -115,9 +90,11 @@ def custom_generator():
 
 def main():
     data_structure = {
-        'EmployeeID' : ('INT', fake.number),
+        'EmployeeID' : ('INT', generate_int_in_range()),
         'FirstName' :('VARCHAR(50)', fake.first_name),
-      
+        'LastName' :('VARCHAR(50)', fake.last_name),
+        'Salary' : ('Float()', generate_double_in_range(1000, 10000)),
+        'Department' : ('VARCAHR(50)', generate_rand_from_choices(Department_choices))
   
     }
     return {
@@ -139,5 +116,7 @@ def test_fake_data_generation(record, num_records=1):
 
 
 if __name__ == '__main__':
-    record = main()
-    add_mock_data_to_db(record)  # Just for testing
+    output = main()
+    record = output['fake_data_structure']
+    print(test_fake_data_generation(record))
+
