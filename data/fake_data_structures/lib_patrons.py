@@ -26,19 +26,6 @@ book_choices = [
     "The Bear and The Goose"
 ]
 
-genre_choices = [
-    "Science Fiction",
-    "Historical Fiction",
-    "Self-help",
-    "Science",
-    "History",
-    "True Crime",
-    "Fantasy",
-    "Thriller",
-    "Mystery",
-    "Romance",
-    "Comedy"
-]
 
 status_choices = [
     "available",
@@ -98,12 +85,13 @@ def custom_generator():
 
 def main():
     data_structure = {
-         'BookID' : ('INT', generate_int_in_range()),
+         'IDNumber' : ('INT', generate_int_in_range()),
+         'Person_Name' : ('VARCAHR(50)', fake.name),
          'BookName' : ('VARCHAR(50)', generate_rand_from_choices(book_choices)),
          'BookAuthor' : ('VARCHAR(50)', fake.name),
-         'BookGenre' : ('VARCHAR(50)', generate_rand_from_choices(genre_choices)),
-         'BookStatus' : ('VARCHAR(50)', generate_rand_from_choices(status_choices)),
-         'CheckoutDate' : ('VARCHAR(50)', fake.date)
+         'Address' : ('VARCHAR(50)', fake.address),
+         'Checkout_date' : ('VARCHAR(50)', fake.date),
+         'Due_date' : ('VARCHAR(50)', fake.date)
   
     }
     return {
