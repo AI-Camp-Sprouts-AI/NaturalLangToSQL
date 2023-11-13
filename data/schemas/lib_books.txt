@@ -1,0 +1,7 @@
+CREATE TABLE Lib_Books(
+    'BookID' : INT,
+    'BookName' : VARCHAR(50), 
+    'BookAuthor' : VARCHAR(50),
+    'BookStatus' : VARCHAR(50),
+    'CheckoutDate' : VARCHAR(50)
+);
