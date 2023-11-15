@@ -6,35 +6,43 @@ from src.mock_data_generator import add_mock_data_to_db
 
 fake = Faker()
 
-funding_stage_choices = [
-    "Series E",
-    "Other",
-    "Seed",
-    "None",
-    "Equity Crowdfunding",
-    "Series F",
-    "Series C",
-    "Series G",
-    "Series D",
-    "Convertible Note",
+book_choices = [
+    "The Labyrinth of Lost Dreams",
+    "Moonlit Melodies",
+    "Shadows and Intrigue",
+    "Digital Revolution: Navigating the Tech Landscape",
+    "Economics Unraveled: Understanding the Global Marketplace",
+    "Quantum Quandaries",
+    "How to be a Logician",
+    "This Statement is False",
+    "Unveiling the Cosmos: A Journey through Space Exploration",
+    "Serenade of the Silver Moon",
     "Angel",
-    "Private Equity",
-    "Venture (Round not Specified)",
-    "Series H",
-    "Debt Financing",
-    "Series A",
-    "Series B"
+    "Mindful Living: Cultivating Peace in a Busy World",
+    "Sanctum Unveiled",
+    "Aetherial Tides: Saga of the Starforged",
+    "The Labyrinth of Lost Dreams",
+    "Monkeys On a Typewriter",
+    "The Bear and The Goose"
 ]
 
-Department_choices = [
-    'Sales', 'Marketing', 'Finance', 'Human Resources', 'IT', 'customer service', 'Operations'
+genre_choices = [
+    "Science Fiction",
+    "Historical Fiction",
+    "Self-help",
+    "Science",
+    "History",
+    "True Crime",
+    "Fantasy",
+    "Thriller",
+    "Mystery",
+    "Romance",
+    "Comedy"
 ]
 
 status_choices = [
-    "Qualified",
-    "NA",
-    "Disqualified",
-    "NULL"
+    "available",
+    "checked-out"
 ]
 
 
@@ -90,11 +98,12 @@ def custom_generator():
 
 def main():
     data_structure = {
-        'EmployeeID' : ('INT', generate_int_in_range()),
-        'FirstName' :('VARCHAR(50)', fake.first_name),
-        'LastName' :('VARCHAR(50)', fake.last_name),
-        'Salary' : ('Float()', generate_double_in_range(1000, 10000)),
-        'Department' : ('VARCAHR(50)', generate_rand_from_choices(Department_choices))
+         'BookID' : ('INT', generate_int_in_range()),
+         'BookName' : ('VARCHAR(50)', generate_rand_from_choices(book_choices)),
+         'BookAuthor' : ('VARCHAR(50)', fake.name),
+         'BookGenre' : ('VARCHAR(50)', generate_rand_from_choices(genre_choices)),
+         'BookStatus' : ('VARCHAR(50)', generate_rand_from_choices(status_choices)),
+         'CheckoutDate' : ('VARCHAR(50)', fake.date)
   
     }
     return {
@@ -119,4 +128,3 @@ if __name__ == '__main__':
     output = main()
     record = output['fake_data_structure']
     print(test_fake_data_generation(record))
-

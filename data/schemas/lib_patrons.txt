@@ -1,0 +1,10 @@
+CREATE TABLE Lib_Patrons (
+    'IDNumber' INT, 
+    'Person_Name' VARCAHR(50),
+    'BookName'  VARCHAR(50), 
+    'BookAuthor' VARCHAR(50), 
+    'Address'  VARCHAR(50),
+    'Checkout_date' VARCHAR(50), 
+    'Due_date'  VARCHAR(50)'
+  
+);
