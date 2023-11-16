@@ -32,6 +32,7 @@ class NLP2SQL(IBaseClass):
             Respond with 'yes' or 'no':
             - 'Yes' if it is reasonably possible to answer the prompt using the given schema, erring on the side of a broader interpretation of column names and data types.
             - 'No' only if the prompt clearly cannot be answered with the available schema information.
+            Remember to include yes or no in your responses.
 
             Use common database naming conventions and industry practices as a guide, but lean towards inclusive interpretations. Avoid overly stringent verification or requests for clarification unless absolutely necessary.
 
@@ -103,6 +104,7 @@ class NLP2SQL(IBaseClass):
         #print("Relevancy:\n"+response)
 
         if 'yes' in response.lower():
+            return ModelOutput(response, True)
             generation_prompt = self.generation_prompt.format(schema=self.schema)
             messages = [SystemMessage(content=generation_prompt), HumanMessage(content=user_input)]
             response = self.llm.predict_messages(messages=(self.chat_history + messages)).content
@@ -117,7 +119,7 @@ class NLP2SQL(IBaseClass):
             else:
                 response = "I'm sorry, I don't understand your question."
         else:
-            #return ModelOutput("tmp", False)
+            return ModelOutput(response, False)
             clarification_prompt = self.clarification_prompt.format(schema=self.schema)
             messages = [SystemMessage(content=clarification_prompt), HumanMessage(content=user_input)]
             response = self.llm.predict_messages(messages=(self.chat_history + messages)).content
