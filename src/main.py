@@ -1,3 +1,5 @@
+import pytest
+import time
 from .interfaces import IBaseClass, ModelOutput
 from enum import Enum
 from langchain.schema.language_model import BaseLanguageModel
@@ -64,7 +66,8 @@ class NLP2SQL(IBaseClass):
         final_output = False
 
         if 'review' in self.options and self.options['review']:
-            new_response = self.llm.predict_messages(messages=[SystemMessage(content=self.review_prompt), HumanMessage(content="Content:\n"+response.content)])
+            new_response = self.llm.predict_messages(messages=[SystemMessage(
+                content=self.review_prompt), HumanMessage(content="Content:\n"+response.content)])
             if 'INVALID' not in new_response.content:
                 final_output = True
                 response = new_response
@@ -116,6 +119,42 @@ output_type_class_map = {
     OutputTypes.SQL: NLP2SQL,
     # OutputTypes.API: NLP2API,
 }
+
+
+class ResultsCollector:
+    def __init__(self):
+        self.reports = []
+        self.collected = 0
+        self.exitcode = 0
+        self.passed = 0
+        self.failed = 0
+        self.xfailed = 0
+        self.skipped = 0
+        self.accuracy = 0.0
+        self.total_duration = 0
+        self.passed_assertions = 0
+
+    @pytest.hookimpl(hookwrapper=True)
+    def pytest_runtest_makereport(self, item, call):
+        outcome = yield
+        report = outcome.get_result()
+        if report.when == 'call':
+            self.reports.append(report)
+
+    def pytest_assertion_pass(self, item, lineno, orig, expl):
+        self.passed_assertions += 1
+
+    def pytest_collection_modifyitems(self, items):
+        self.collected = len(items)
+
+    def pytest_terminal_summary(self, terminalreporter):
+        self.passed = self.passed_assertions
+        self.failed = len(terminalreporter.stats.get('failed', []))
+        self.xfailed = len(terminalreporter.stats.get('xfailed', []))
+        self.skipped = len(terminalreporter.stats.get('skipped', []))
+        self.total_tests = self.passed + self.failed + self.xfailed + self.skipped
+        self.accuracy = round((self.passed / self.total_tests) * 100, 2)
+        self.total_duration = time.time() - terminalreporter._sessionstarttime
 
 
 def initialize_model(llm, options={}, output_type: OutputTypes = OutputTypes.SQL):

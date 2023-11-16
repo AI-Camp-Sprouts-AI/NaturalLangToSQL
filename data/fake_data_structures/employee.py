@@ -1,122 +1,58 @@
-import random
-import sys
-from faker import Faker
+"""
+Here the schema of the table from client has to be pasted
+---
 
-from src.mock_data_generator import add_mock_data_to_db
+**TABLE NAME** Website Aggregates
+
+**Schema**
+    column_name : data_type
+    
+"""
+
+from src.utils import generate_double_in_range, \
+    generate_rand_from_choices, \
+    get_structure_for_faker, \
+    generate_date_between, \
+    get_table_blueprint
+
+from src.mock_data_generator import create_mock_data
+
+from faker import Faker
+from datetime import datetime, timedelta
 
 fake = Faker()
 
-funding_stage_choices = [
-    "Series E",
-    "Other",
-    "Seed",
-    "None",
-    "Equity Crowdfunding",
-    "Series F",
-    "Series C",
-    "Series G",
-    "Series D",
-    "Convertible Note",
-    "Angel",
-    "Private Equity",
-    "Venture (Round not Specified)",
-    "Series H",
-    "Debt Financing",
-    "Series A",
-    "Series B"
+department_choices = [
+    'Sales',
+    'Marketing',
+    'Finance',
+    'Human Resources',
+    'IT',
+    'customer service',
+    'Operations'
 ]
 
-Department_choices = [
-    'Sales', 'Marketing', 'Finance', 'Human Resources', 'IT', 'customer service', 'Operations'
-]
+start_date = datetime.now().date() - timedelta(days=600)
 
-status_choices = [
-    "Qualified",
-    "NA",
-    "Disqualified",
-    "NULL"
-]
-
-
-def generate_rand_null_with_prob(generator, null_probability=0.5):
-    weights = [1 - null_probability, null_probability]
-    return lambda: random.choices([generator(), None], weights=weights, k=1)[0]
-
-
-def generate_int_in_range(start=0, end=sys.maxsize):
-    return lambda: random.randint(start, end)
-
-
-def generate_float_in_range(start=0, end=sys.maxsize):
-    return lambda: round(random.uniform(start, end), 2)
-
-
-def generate_rand_from_choices(choices):
-    return lambda: random.choice(choices)
-
-
-def generate_double_in_range(start=0, end=sys.maxsize):
-    return lambda: round(random.uniform(start, end), 4)
-
-
-def generate_int_range(start=0, end=sys.maxsize):
-    def generate_range():
-        range_start = random.randint(start, end)
-        range_end = random.randint(range_start, end)
-        return f'{range_start} - {range_end}'
-    return generate_range
-
-
-def get_table_blueprint(data_structure):
-    return ', '.join([
-        f'{key} {data_structure[key][0]}' for key in data_structure.keys()
-    ])
-
-
-def get_structure_for_faker(data_structure):
-    return {
-        key: data_structure[key][1] for key in data_structure.keys()
-    }
-
-# fake.number -> Func instance
-# fake.number() -> random number
-
-# Follow this structure for custom fake functions
-def custom_generator():
-  def actual_function():
-    # logic
-    return random_value
-  return actual_function
 
 def main():
     data_structure = {
-        'EmployeeID' : ('INT', generate_int_in_range()),
-        'FirstName' :('VARCHAR(50)', fake.first_name),
-        'LastName' :('VARCHAR(50)', fake.last_name),
-        'Salary' : ('Float()', generate_double_in_range(1000, 10000)),
-        'Department' : ('VARCAHR(50)', generate_rand_from_choices(Department_choices))
-  
+        'first_name': ('VARCHAR(50)', fake.first_name),
+        'last_name': ('VARCHAR(50)', fake.last_name),
+        'joining_date': ('DATE', generate_date_between(start_date)),
+        'salary': ('DECIMAL(10,2)', generate_double_in_range(1000, 10000)),
+        'department': ('VARCHAR(50)', generate_rand_from_choices(department_choices))
     }
-    return {
+    return [{
         'column_blueprint': get_table_blueprint(data_structure),
         'fake_data_structure': get_structure_for_faker(data_structure)
-    }
+    }]
+
 # Only for testing
 
 
-def test_fake_data_generation(record, num_records=1):
-    fake_data = []
-    for _ in range(num_records):
-        fake_record = {
-            key: record[key]() for key in record.keys()
-        }
-        fake_data.append(fake_record)
-
-    return fake_data
-
-
 if __name__ == '__main__':
-    output = main()
-    record = output['fake_data_structure']
-    print(test_fake_data_generation(record))
-
+    records = main()
+    for record in records:
+        structure = record.get('fake_data_structure', {})
+        print(create_mock_data(structure, 1))

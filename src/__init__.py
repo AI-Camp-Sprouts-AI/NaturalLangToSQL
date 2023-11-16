@@ -1,3 +1,4 @@
+import time
 import re
 import importlib
 import pytest
@@ -9,7 +10,7 @@ from pathlib import Path
 from glob import glob
 
 from .database_connector import execute_command
-from .main import initialize_model
+from .main import ResultsCollector, initialize_model
 from .mock_data_generator import add_mock_data_to_db
 from langchain.chat_models import ChatOpenAI
 
@@ -90,10 +91,27 @@ def run_test_suites():
 
     complete_file_path = PATH_TO_TEST_SUITES.joinpath(test_suite).absolute()
 
-    pytest.main(['-v', '--continue-on-collection-errors', '-s', complete_file_path])
+    collector = ResultsCollector()
+    pytest.main(['--verbose', '-s', complete_file_path,
+                #  '--html=pytest_report.html',
+                 #  '-q', '--tb=no', '--disable-warnings'
+                 ],
+                plugins=[collector])
+
+    for report in collector.reports:
+        print('id:', report.nodeid, 'outcome:', report.outcome)
+    print(f"""
+    Summary:
+        Tests passed : {collector.passed}
+        Tests failed : {collector.failed}
+        Tests failed to execute : {collector.xfailed}
+        Tests skipped : {collector.skipped}
+        Accuracy : {collector.accuracy}
+        Test Duration : {collector.total_duration}
+    """)
 
 
-def create_mock_data():
+def run_mock_data_generator():
     """
     This function should use the mock_data_generator.py module
     to create the mock data.
@@ -106,8 +124,9 @@ def create_mock_data():
     2. Ask how many number of fake data has to be generated
 
     """
-    fake_data_files = glob(
-        './*.py', root_dir=PATH_TO_FAKE_DATASTRUCTURES.absolute())
+    fake_data_files = list(glob(
+        './*.py', root_dir=PATH_TO_FAKE_DATASTRUCTURES.absolute()))
+    fake_data_files.remove('./library.py')
     table_name = inquirer.rawlist(
         message="Choose the Table Name",
         choices=[
@@ -123,12 +142,14 @@ def create_mock_data():
 
     try:
         module = importlib.import_module(module_name)
-        output = module.main()
+        outputs = module.main()
     except ModuleNotFoundError:
         print(f"Module '{module_name}' not found.")
 
-    column_blueprint = output.get('column_blueprint')
-    fake_data_structure = output.get('fake_data_structure')
+    for output in outputs:
+        table_name = output.get('table_name', table_name)
+        column_blueprint = output.get('column_blueprint')
+        fake_data_structure = output.get('fake_data_structure')
 
-    add_mock_data_to_db(table_name, column_blueprint,
-                        fake_data_structure, num_of_fake_data_to_generate)
+        add_mock_data_to_db(table_name, column_blueprint,
+                            fake_data_structure, num_of_fake_data_to_generate)

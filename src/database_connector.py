@@ -51,13 +51,10 @@ cur = conn.cursor()
 def execute_command(command):
     try:
         cur.execute(command)
-    except Exception as e:
-        print(e)
-    try:
         result = cur.fetchall()
         return result
-    except:
-        print("Nothing to select")
+    except Exception as e:
+        print("Error Occurred :", e)
 # Create new table with given column names
 # Include datatype following column name
 # Example: "COLUMN_NAME DATATYPE"
@@ -138,9 +135,11 @@ def insert_records(table_name, records):
             table = sql.Identifier(table_name)
             query = sql.SQL("INSERT INTO {table} ({columns}) VALUES ({values});").format(
                 table=table, columns=columns, values=values)
-
-            cursor.executemany(query, [list(record.values())
-                               for record in records])
+            try:
+                cursor.executemany(query, [list(record.values())
+                                           for record in records])
+            except Exception as e:
+                print('Error occured', e)
 
 # Delete records from an existing table
 # selectors is a dictionary where values of key-value is the value to match against or a tuple where the first element is an operator (<,>,!=,BETWEEN, IN, etc) and the second is what to evaluate

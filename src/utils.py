@@ -1,5 +1,6 @@
 import random
 import sys
+import hashlib
 from faker import Faker
 from datetime import datetime
 fake = Faker()
@@ -35,7 +36,9 @@ def generate_int_range(start=0, end=sys.maxsize):
 
 
 def get_table_blueprint(data_structure):
-    return 'ID SERIAL PRIMARY KEY, '.join([
+    has_id = check_for_id(data_structure)
+    auto_id_generate_string = 'ID SERIAL PRIMARY KEY,'
+    return ('' if has_id else auto_id_generate_string) + ' ,'.join([
         f'{key} {data_structure[key][0]}' for key in data_structure.keys()
     ])
 
@@ -52,3 +55,32 @@ def generate_date_between(start, end=datetime.now().date()):
         return fake.date_between(start, end)
 
     return generate_date
+
+
+def generate_at_end(func):
+    def wrapper(*args, **kwargs):
+        return func(*args, **kwargs)
+    wrapper.generate_at_end = True
+    return wrapper
+
+
+def generate_using(func, *keys):
+    @generate_at_end
+    def construct(src):
+        return func(*[src.get(key, None) for key in keys])
+    return construct
+
+
+def hash_fun(*args):
+    value = ''.join(filter(lambda x: x, args))
+    return hashlib.sha256(value.encode()).hexdigest()
+
+
+def generate_closure(func, *args):
+    def closure():
+        return func(*[arg() for arg in args])
+    return closure
+
+
+def check_for_id(object):
+    return any('_id' in key or key == 'id'for key in object)

@@ -1,8 +1,8 @@
-CREATE TABLE Employee (
-    EmployeeID INT PRIMARY KEY,
-    FirstName VARCHAR(50),
-    LastName VARCHAR(50),
-    JoiningDate DATE,
-    Department VARCHAR(50),
-    Salary DECIMAL(10, 2)
+CREATE TABLE employee (
+    id SERIAL PRIMARY KEY,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    joining_date DATE,
+    salary DECIMAL(10,2),
+    department VARCHAR(50),
 );

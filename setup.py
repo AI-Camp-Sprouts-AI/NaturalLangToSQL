@@ -12,16 +12,16 @@ setup(
         'faker',
         'psycopg2'
     ],
-    extras_require = {
+    extras_require={
         'dev': [
             'InquirerPy',
             'pytest'
         ]
-    }
+    },
     entry_points="""
     [console_scripts]
         text2query-example=src:create_terminal_instance
         text2query-test=src:run_test_suites
-        text2query-mock=src:create_mock_data
+        text2query-mock=src:run_mock_data_generator
     """
 )
