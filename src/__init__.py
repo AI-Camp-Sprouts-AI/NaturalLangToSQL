@@ -94,10 +94,9 @@ def run_test_suites():
     collector = ResultsCollector()
     pytest.main(['--verbose', '-s', complete_file_path,
                  '--maxfail='+str(sys.maxsize),
-                 '--html=pytest_report.html',
-                #  '-q', '--tb=no', '--disable-warnings'
-                ],
-                plugins=[collector])
+                #  '--html=pytest_report.html',
+                  '-q', '--tb=no', '--disable-warnings'
+                ], plugins=[collector])
 
     for report in collector.reports:
         print('id:', report.nodeid, 'outcome:', report.outcome)

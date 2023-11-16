@@ -144,7 +144,9 @@ class ResultsCollector:
 
     def pytest_assertrepr_compare(self, config, op, left, right):
         self.completed_assertions += 1
-        print(f"\nCompleted Assertions:{self.completed_assertions}")
+        if self.completed_assertions == 1:
+            print('\n')
+        print(f"Completed Assertions:{self.completed_assertions}")
 
     def pytest_assertion_pass(self, item, lineno, orig, expl):
         self.passed_assertions += 1
@@ -158,8 +160,10 @@ class ResultsCollector:
         self.xfailed = len(terminalreporter.stats.get('xfailed', []))
         self.skipped = len(terminalreporter.stats.get('skipped', []))
         self.total = self.completed_assertions
-        self.accuracy = round(
-            (self.passed / self.completed_assertions) * 100, 2)
+        self.accuracy = 0
+        if self.completed_assertions > 0:
+            self.accuracy = round(
+                (self.passed / self.completed_assertions) * 100, 2)
         self.total_duration = time.time() - terminalreporter._sessionstarttime
 
 
