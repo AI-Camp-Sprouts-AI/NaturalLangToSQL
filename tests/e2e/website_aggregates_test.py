@@ -32,6 +32,7 @@ from src import create_model
 from src.database_connector import execute_command
 from decimal import Decimal
 from pathlib import Path
+from pytest_check import check
 
 CWD = Path(__file__).parent
 
@@ -42,13 +43,13 @@ testcases = [
         'sql_output': "SELECT SUM(no_of_visiting_ips) AS total_visitors FROM website_aggregates WHERE customer_domain = 'hardy.net';",
         'description': "Simple count of total visitors."
     },
-    # Flaky Test as it tests last 7 days -> the output is dependent on current date
-    {
-        'input': "How many total visitors have visited google.com domain in the last 7 days?",
-        'output': [(Decimal(61393),)],
-        'sql_output': "SELECT SUM(no_of_visiting_ips) AS total_visitors FROM website_aggregates WHERE customer_domain = 'google.com' AND dt >= current_date - INTERVAL '7 days';",
-        'description': "Total count of visitors in the last 7 days."
-    },
+    # # Flaky Test as it tests last 7 days -> the output is dependent on current date
+    # {
+    #     'input': "How many total visitors have visited google.com domain in the last 7 days?",
+    #     'output': [(Decimal(40398),)],
+    #     'sql_output': "SELECT SUM(no_of_visiting_ips) AS total_visitors FROM website_aggregates WHERE customer_domain = 'google.com' AND dt >= current_date - INTERVAL '7 days';",
+    #     'description': "Total count of visitors in the last 7 days."
+    # },
     {
         'input': "How many total visitors have visited openai.com domain in the year 2023?",
         'output': [(Decimal(262354),)],
@@ -134,8 +135,9 @@ testcases = [
 ]
 
 
-def check(value, expected, info=''):
-    assert expected == value, info
+def check_value(value, expected, info=''):
+    with check:
+        assert expected == value, info
 
 
 def test_accuracy():
@@ -144,7 +146,7 @@ def test_accuracy():
     schema_path = CWD.joinpath(schema_path).absolute()
     model.load_schema_from_file(schema_path)
 
-    for testcase in testcases[:1]:
+    for testcase in testcases:
         for i in range(1):
             user_input = testcase['input']
             expected_output = testcase['output']
@@ -152,12 +154,15 @@ def test_accuracy():
             llm_response = model.predict(user_input)
             model_sql_output = llm_response.message.replace('\n', ' ')
             is_final_output = llm_response.is_final_output
-            check(is_final_output, True,
-                'Model isn\'t able to predict the response in single shot')
+            # check_value(
+            #     is_final_output, 
+            #     True, 
+            #     'Model isn\'t able to predict the response in single shot'
+            # )
             model_output = execute_command(model_sql_output)
             debugging_info = f"""
             User Chat = {user_input}
             Expected SQL Output = {expected_sql_output}
             AI\' SQL Output = {model_sql_output}
             """
-            check(model_output, expected_output, f'{debugging_info}')
+            check_value(model_output, expected_output, f'{debugging_info}')

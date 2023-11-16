@@ -132,6 +132,7 @@ class ResultsCollector:
         self.skipped = 0
         self.accuracy = 0.0
         self.total_duration = 0
+        self.completed_assertions = 0
         self.passed_assertions = 0
 
     @pytest.hookimpl(hookwrapper=True)
@@ -140,6 +141,10 @@ class ResultsCollector:
         report = outcome.get_result()
         if report.when == 'call':
             self.reports.append(report)
+
+    def pytest_assertrepr_compare(self, config, op, left, right):
+        self.completed_assertions += 1
+        print(f"\nCompleted Assertions:{self.completed_assertions}")
 
     def pytest_assertion_pass(self, item, lineno, orig, expl):
         self.passed_assertions += 1
@@ -152,8 +157,9 @@ class ResultsCollector:
         self.failed = len(terminalreporter.stats.get('failed', []))
         self.xfailed = len(terminalreporter.stats.get('xfailed', []))
         self.skipped = len(terminalreporter.stats.get('skipped', []))
-        self.total_tests = self.passed + self.failed + self.xfailed + self.skipped
-        self.accuracy = round((self.passed / self.total_tests) * 100, 2)
+        self.total = self.completed_assertions
+        self.accuracy = round(
+            (self.passed / self.completed_assertions) * 100, 2)
         self.total_duration = time.time() - terminalreporter._sessionstarttime
 
 

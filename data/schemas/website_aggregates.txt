@@ -28,3 +28,4 @@ CREATE TABLE website_aggregates (
 IMPORTANT:
 1. if the user just mentions as domain, take it as customer_domain
 2. if the country name is abbreviated, modify it as complete country name
+3. The industry name is always in lowercase

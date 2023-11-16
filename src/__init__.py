@@ -1,7 +1,7 @@
-import time
 import re
 import importlib
 import pytest
+import sys
 
 from os import getenv
 from dotenv import load_dotenv, find_dotenv
@@ -93,19 +93,18 @@ def run_test_suites():
 
     collector = ResultsCollector()
     pytest.main(['--verbose', '-s', complete_file_path,
-                #  '--html=pytest_report.html',
-                 #  '-q', '--tb=no', '--disable-warnings'
-                 ],
+                 '--maxfail='+str(sys.maxsize),
+                 '--html=pytest_report.html',
+                #  '-q', '--tb=no', '--disable-warnings'
+                ],
                 plugins=[collector])
 
     for report in collector.reports:
         print('id:', report.nodeid, 'outcome:', report.outcome)
     print(f"""
     Summary:
-        Tests passed : {collector.passed}
-        Tests failed : {collector.failed}
-        Tests failed to execute : {collector.xfailed}
-        Tests skipped : {collector.skipped}
+        Passed Assertions : {collector.passed}
+        Failed Assertions : {collector.total - collector.passed}
         Accuracy : {collector.accuracy}
         Test Duration : {collector.total_duration}
     """)
