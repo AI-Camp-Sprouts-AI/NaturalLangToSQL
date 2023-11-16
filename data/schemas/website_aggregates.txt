@@ -1,29 +1,29 @@
 CREATE TABLE website_aggregates (
-    dt DATE,
-    customer_domain VARCHAR(255),
-    lead_domain VARCHAR(255),
-    ip_country VARCHAR(255),
-    no_of_visiting_ips BIGINT,
-    no_of_hits BIGINT,
-    lead_domain_name VARCHAR(255),
-    industry VARCHAR(255),
-    estimated_num_employees INT,
-    city VARCHAR(255),
-    state VARCHAR(255),
-    company_country VARCHAR(255),
-    annual_revenue FLOAT,
-    total_funding FLOAT,
-    latest_funding_stage VARCHAR(255),
-    status VARCHAR(255),
-    decayed_inbound_score DOUBLE,
-    decayed_intent_score DOUBLE,
-    decayed_clubbed_score DOUBLE,
-    last_visit_date DATE,
-    employee_range VARCHAR(255),
-    revenue_range VARCHAR(255)
+    dt DATE, -- Date of data entry/event, e.g., YYYY-MM-DD
+    customer_domain VARCHAR(255), -- Customer's domain, e.g., google.com, fb.com
+    lead_domain VARCHAR(255), -- Potential customer's domain
+    ip_country VARCHAR(255), -- Visitor's IP country, e.g., India, United States
+    no_of_visiting_ips BIGINT, -- Count of unique visiting IPs, e.g., 1, 2, 3
+    no_of_hits BIGINT, -- Total number of site hits, e.g., 1, 2, 3
+    lead_domain_name VARCHAR(255), -- Lead's domain name, e.g., Bitmetric solutions
+    industry VARCHAR(255), -- Industry category, e.g., investment management, hospitality
+    estimated_num_employees INT, -- Estimated number of employees, e.g., 10, 1000
+    city VARCHAR(255), -- City of the customer/lead, e.g., Mumbai, Pune
+    state VARCHAR(255), -- State of the customer/lead, e.g., Maharashtra, Michigan
+    company_country VARCHAR(255), -- Country of the company, e.g., India, United States
+    annual_revenue FLOAT, -- Annual company revenue, e.g., 12345, 444444
+    total_funding FLOAT, -- Total funding received, e.g., 12345, 444444
+    latest_funding_stage VARCHAR(255), -- Stage of latest funding, e.g., Series E, Seed
+    status VARCHAR(255), -- Current status of the lead/customer, e.g., Qualified, Disqualified
+    decayed_inbound_score DOUBLE, -- Decayed inbound score, a number > 0 or NULL
+    decayed_intent_score DOUBLE, -- Decayed intent score, a number > 0 or NULL
+    decayed_clubbed_score DOUBLE, -- Decayed clubbed score, a number > 0 or NULL
+    last_visit_date DATE, -- Date of last site visit, e.g., YYYY-MM-DD, NULL
+    employee_range VARCHAR(255), -- Range of employee count, e.g., 251 - 500, > 2000
+    revenue_range VARCHAR(255) -- Revenue range, e.g., <= 100K, 10M - 100M
 );
-
 
 NOTE:
 1. if the user just mentions as domain, take it as customer_domain
 2. if the country name is abbreviated, modify it as complete country name
+3. if the user just mentions visits, assume no_of_visiting_ips

@@ -26,19 +26,17 @@ class NLP2SQL(IBaseClass):
         self.schema = ''
 
         self.relevancy_prompt = """
-            As an experienced data analyst with specialized expertise in PostgreSQL, your task is to evaluate the relevance of a given human prompt in relation to a specified database schema. 
-            Your role is to assess whether the database schema contains sufficient information to answer the question posed in the prompt. 
+            As an experienced data analyst with expertise in PostgreSQL, your role is to assess the relevance of a human prompt in relation to a given database schema, focusing on flexibility and practical interpretations. 
+            Determine if the schema can plausibly support answering the question in the prompt.
 
-            Your response should be a simple 'yes' or 'no'. 
-            Answer 'yes' if the prompt is relevant and answerable based on the given schema. 
-            Answer 'no' if the prompt is not relevant or not answerable based on the given schema.
-            
-            Please consider the structure, fields, and relationships defined in the database schema provided below:
+            Respond with 'yes' or 'no':
+            - 'Yes' if it is reasonably possible to answer the prompt using the given schema, erring on the side of a broader interpretation of column names and data types.
+            - 'No' only if the prompt clearly cannot be answered with the available schema information.
+
+            Use common database naming conventions and industry practices as a guide, but lean towards inclusive interpretations. Avoid overly stringent verification or requests for clarification unless absolutely necessary.
 
             Database Schema:
             {schema}
-
-            LIMIT YOUR RESPONSES TO UNDER ONE SENTENCE IN LENGTH.
         """.replace('  ', '').strip()
 
         self.generation_prompt = """
@@ -102,23 +100,24 @@ class NLP2SQL(IBaseClass):
         relevancy_prompt = self.relevancy_prompt.format(schema=self.schema)
         messages = [SystemMessage(content=relevancy_prompt), HumanMessage(content=user_input)]
         response = self.llm.predict_messages(messages=(self.chat_history + messages)).content
-        print("Relevancy:\n"+response)
+        #print("Relevancy:\n"+response)
 
         if 'yes' in response.lower():
             generation_prompt = self.generation_prompt.format(schema=self.schema)
             messages = [SystemMessage(content=generation_prompt), HumanMessage(content=user_input)]
             response = self.llm.predict_messages(messages=(self.chat_history + messages)).content
-            print("SQL:\n"+response)
+            #print("SQL:\n"+response)
 
             review_prompt = self.review_prompt.format(schema=self.schema)
             messages = [SystemMessage(content=review_prompt), HumanMessage(content=response)]
             review_response = self.llm.predict_messages(messages=messages).content
-            print("Review:\n"+review_response)
+            #print("Review:\n"+review_response)
             if 'yes' in review_response.lower():
                 final_output = True
             else:
                 response = "I'm sorry, I don't understand your question."
         else:
+            #return ModelOutput("tmp", False)
             clarification_prompt = self.clarification_prompt.format(schema=self.schema)
             messages = [SystemMessage(content=clarification_prompt), HumanMessage(content=user_input)]
             response = self.llm.predict_messages(messages=(self.chat_history + messages)).content

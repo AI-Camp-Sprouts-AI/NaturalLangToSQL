@@ -11,7 +11,6 @@ from glob import glob
 from .database_connector import execute_command
 from .main import initialize_model
 from .mock_data_generator import add_mock_data_to_db
-from .testcase_runner import run_testcases
 from langchain.chat_models import ChatOpenAI
 
 CWD = Path(__file__).parent
@@ -25,7 +24,7 @@ def create_model():
     api_key = getenv('OPENAI_API_KEY')
     llm = ChatOpenAI(model="gpt-3.5-turbo-16k",
                      openai_api_key=api_key, temperature=0)
-    model = initialize_model(llm=llm, options={'memory': 3, 'review': True})
+    model = initialize_model(llm=llm, options={'memory': 3})
     return model
 
 

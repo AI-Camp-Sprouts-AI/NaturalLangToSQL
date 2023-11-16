@@ -30,10 +30,10 @@ load_dotenv(find_dotenv())
 # Load credentials from .env file
 params = {
     'dbname': os.environ.get("DB_NAME"),
-    'user': os.environ.get("USERNAME"),
-    'password': os.environ.get("PASSWORD"),
-    'host': os.environ.get("HOST"),
-    'port': os.environ.get("PORT")
+    'user': os.environ.get("DB_USERNAME"),
+    'password': os.environ.get("DB_PASSWORD"),
+    'host': os.environ.get("DB_HOST"),
+    'port': os.environ.get("DB_PORT")
 }
 
 # Connect to the database
