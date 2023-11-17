@@ -52,24 +52,6 @@ def create_terminal_instance():
             else:
                 print(output.message)
 
-    """
-    4. Create a function which takes the input and output from these testcases and outputs the accuracy of the model. This testing function has to be written here (run_test_suites()
-    5. The answer generated must be vetted for accuracy (reruns must provide the same result). Publish the accuracy.
-
-    # Function to calculate accuracy
-    def calculate_accuracy(test_cases):
-        correct = 0
-        for test_case in test_cases:
-            if test_case['output'] == test_case['sql_output']:
-                correct += 1
-        accuracy = correct / len(test_cases) * 100
-        return accuracy
-
-    # Calculate accuracy
-    accuracy = calculate_accuracy(test_cases)
-    print(f"Accuracy: {accuracy:.2f}%")
-    """
-
 
 def run_test_suites():
     """
@@ -91,22 +73,22 @@ def run_test_suites():
 
     complete_file_path = PATH_TO_TEST_SUITES.joinpath(test_suite).absolute()
 
-    collector = ResultsCollector()
+    # collector = ResultsCollector()
     pytest.main(['--verbose', '-s', complete_file_path,
                  '--maxfail='+str(sys.maxsize),
-                #  '--html=pytest_report.html',
-                  '-q', '--tb=no', '--disable-warnings'
-                ], plugins=[collector])
+                 ],
+                # plugins=[collector]
+                )
 
-    for report in collector.reports:
-        print('id:', report.nodeid, 'outcome:', report.outcome)
-    print(f"""
-    Summary:
-        Passed Assertions : {collector.passed}
-        Failed Assertions : {collector.total - collector.passed}
-        Accuracy : {collector.accuracy}
-        Test Duration : {collector.total_duration}
-    """)
+    # for report in collector.reports:
+    #     print('id:', report.nodeid, 'outcome:', report.outcome)
+    # print(f"""
+    # Summary:
+    #     Passed Assertions : {collector.passed}
+    #     Failed Assertions : {collector.total - collector.passed}
+    #     Accuracy : {collector.accuracy}
+    #     Test Duration : {collector.total_duration}
+    # """)
 
 
 def run_mock_data_generator():

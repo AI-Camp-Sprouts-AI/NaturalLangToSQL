@@ -32,6 +32,8 @@ from src import create_model
 from src.database_connector import execute_command
 from decimal import Decimal
 from pathlib import Path
+from pytest_check import check
+import datetime
 
 CWD = Path(__file__).parent
 
@@ -49,9 +51,9 @@ testcases = [
         "description": "This query uses GROUP BY to count the books borrowed by each library member."
     },
     {
-        "input": "Display the details of books lent along with the member's name who borrowed them, including books that haven't been returned yet.",
-        "output": "",
-        "sql_output": "SELECT bl.book_id, lb.title, bl.member_id, lm.name, bl.lend_date, bl.return_date FROM books_lent bl LEFT JOIN library_books lb ON bl.book_id = lb.book_id LEFT JOIN library_members lm ON bl.member_id = lm.member_id;",
+        "input": "Display the top 5 details of books lent along with the member's name who borrowed them, including books that haven't been returned yet.",
+        "output": [('6b7845a9ffe84b5414591b04b0931fb873b9077dc0befb1cfcd15b52da2398c7', 'Little Fires Everywhere', '4a4b210ef84a96c507deb052995d56c1e424bb044b10e4950c0af772c9d13920', 'Aria Nelson', datetime.date(2023, 11, 8)), ('826dc963f8f8e7217639f31e47ffc5f7fdaaa0d548802c4d2a8d3bcc2a172dc1', 'The Jasmine Throne', 'f56e36b0fc5a092a74e4bd4883e64e841f05eb0301d741bb97b14be8d9fb2b62', 'Bella Brooks', datetime.date(2023, 11, 10)), ('d07e31cf6e09192ef297d04584f8732bf94224f44c34bf07643576d7a02be689', "The Handmaid's Tale", 'ae6ac24b62fa4aa9d88cfd0440f66932a9fd5f320bcc4e1df90c4583779cede4', 'Nora Richardson', datetime.date(2023, 10, 26)), ('39cd6a0a874588d070833e58e3a802be36f7aa000a52c05108f06b353b93305f', 'The Giver of Stars', '05476be2400f3cf6ad1d4f248db260ed376c5611b462b0e913dfaee8e2cf4a15', 'Ellie James', datetime.date(2023, 11, 11)), ('af8ee3fa9803eb904d5186f892cde67098f1fb617e9dbb19d57eb82168aae236', 'The Chosen and the Beautiful', '39a59c29d97ee580eb30e1f78cea6dfd75e2527d93efe9843c0a54594d22f13c', 'Layla Cooper', datetime.date(2023, 10, 27))],
+        "sql_output": "SELECT bl.book_id, lb.title, bl.member_id, lm.name, bl.lend_date FROM books_lent bl LEFT JOIN library_books lb ON bl.book_id = lb.book_id LEFT JOIN library_members lm ON bl.member_id = lm.member_id limit 5;",
         "description": "This query uses LEFT JOIN to display details of books lent and the corresponding members' names, including books that haven't been returned."
     },
     {
@@ -134,41 +136,44 @@ testcases = [
     }
 ]
 
-print(
-    # execute_command(
-    #     """
-    #         SELECT
-    #             SUM(no_of_visiting_ips) AS total_visitors
-    #         FROM
-    #             website_aggregates
-    #         WHERE
-    #             customer_domain = 'alphabet.com'
-    #             AND ip_country = 'United States'
-    #     """
-    # )
-)
+# print(
+#     execute_command(
+#         """
+#     SELECT bl.book_id, lb.title, bl.member_id, lm.name, bl.lend_date FROM books_lent bl LEFT JOIN library_books lb ON bl.book_id = lb.book_id LEFT JOIN library_members lm ON bl.member_id = lm.member_id limit 5;
+#         """
+#     )
+# )
 
 
-def check(value, expected, info=''):
-    assert value == expected, info
+def check_value(value, expected, info=''):
+    with check:
+        assert expected == value, info
 
+def accuracy():
+    NO_OF_REPETITIONS = 1
+    model = create_model()
+    schema_path = '../../data/schemas/library_test.txt'
+    schema_path = CWD.joinpath(schema_path).absolute()
+    model.load_schema_from_file(schema_path)
 
-def test_accuracy():
-    pass
-    # model = create_model()
-    # schema_path = '../../data/schemas/library.txt'
-    # schema_path = CWD.joinpath(schema_path).absolute()
-    # model.load_schema_from_file(schema_path)
-
-    # for testcase in testcases[:1]:
-    #     user_input = testcase['input']
-    #     expected_output = testcase['output']
-    #     expected_sql_output = testcase['sql_output']
-    #     llm_response = model.predict(user_input)
-    #     model_sql_output = llm_response.message
-    #     is_final_output = llm_response.is_final_output
-    #     check(is_final_output, True,
-    #         'Model isn\'t able to predict the response in single shot')
-    #     model_output = execute_command(model_sql_output)
-    #     debugging_info = f'{expected_sql_output=}, {model_sql_output=}'
-    #     check(model_output, expected_output, f'{debugging_info}')
+    for testcase in testcases[:1]:
+        for i in range(NO_OF_REPETITIONS):
+            user_input = testcase['input']
+            expected_output = testcase['output']
+            if expected_output:
+                expected_sql_output = testcase['sql_output']
+                llm_response = model.predict(user_input)
+                model_sql_output = llm_response.message.replace('\n', ' ')
+                is_final_output = llm_response.is_final_output
+                # check_value(
+                #     is_final_output,
+                #     True,
+                #     'Model isn\'t able to predict the response in single shot'
+                # )
+                model_output = execute_command(model_sql_output)
+                debugging_info = f"""
+                User Chat = {user_input}
+                Expected SQL Output = {expected_sql_output}
+                AI\' SQL Output = {model_sql_output}
+                """
+                check_value(model_output, expected_output, f'{debugging_info}')

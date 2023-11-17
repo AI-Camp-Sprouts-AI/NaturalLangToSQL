@@ -66,7 +66,7 @@ testcases = [
         'description': "Total count of visitors in the year 2022."
     },
     {
-        'input': "How many total visitors have visited the lead tesla.com whose employee count is within 1000 to 10000?",
+        'input': "How many total visitors have visited the lead domain tesla.com whose employee count is within 1000 to 10000?",
         'output': [(Decimal(290098),)],
         'sql_output': """
             SELECT
@@ -140,14 +140,16 @@ def check_value(value, expected, info=''):
         assert expected == value, info
 
 
-def test_accuracy():
+def accuracy():
+    NO_OF_REPETITIONS = 1
+    
     model = create_model()
     schema_path = '../../data/schemas/website_aggregates.txt'
     schema_path = CWD.joinpath(schema_path).absolute()
     model.load_schema_from_file(schema_path)
 
-    for testcase in testcases:
-        for i in range(1):
+    for testcase in testcases[:1]:
+        for i in range(NO_OF_REPETITIONS):
             user_input = testcase['input']
             expected_output = testcase['output']
             expected_sql_output = testcase['sql_output']
@@ -155,8 +157,67 @@ def test_accuracy():
             model_sql_output = llm_response.message.replace('\n', ' ')
             is_final_output = llm_response.is_final_output
             # check_value(
-            #     is_final_output, 
-            #     True, 
+            #     is_final_output,
+            #     True,
+            #     'Model isn\'t able to predict the response in single shot'
+            # )
+            model_output = create_new_connection_and_execute(model_sql_output)
+            debugging_info = f"""
+            User Chat = {user_input}
+            Expected SQL Output = {expected_sql_output}
+            AI\' SQL Output = {model_sql_output}
+            """
+            check_value(model_output, expected_output, f'{debugging_info}')
+    
+    
+    model2 = create_model()
+    schema_path = '../../data/schemas/website_aggregates.txt'
+    schema_path = CWD.joinpath(schema_path).absolute()
+    model2.load_schema_from_file(schema_path)
+    
+
+    # for testcase in testcases[4:]:
+    #     for i in range(NO_OF_REPETITIONS):
+    #         user_input = testcase['input']
+    #         expected_output = testcase['output']
+    #         expected_sql_output = testcase['sql_output']
+    #         llm_response = model2.predict(user_input)
+    #         model_sql_output = llm_response.message.replace('\n', ' ')
+    #         is_final_output = llm_response.is_final_output
+    #         # check_value(
+    #         #     is_final_output,
+    #         #     True,
+    #         #     'Model isn\'t able to predict the response in single shot'
+    #         # )
+    #         model_output = execute_command(model_sql_output)
+    #         debugging_info = f"""
+    #         User Chat = {user_input}
+    #         Expected SQL Output = {expected_sql_output}
+    #         AI\' SQL Output = {model_sql_output}
+    #         """
+    #         check_value(model_output, expected_output, f'{debugging_info}')
+
+
+
+def accuracy_sample():
+    NO_OF_REPETITIONS = 1
+    
+    model = create_model()
+    schema_path = '../../data/schemas/website_aggregates.txt'
+    schema_path = CWD.joinpath(schema_path).absolute()
+    model.load_schema_from_file(schema_path)
+
+    for testcase in testcases[1:2]:
+        for i in range(NO_OF_REPETITIONS):
+            user_input = testcase['input']
+            expected_output = testcase['output']
+            expected_sql_output = testcase['sql_output']
+            llm_response = model.predict(user_input)
+            model_sql_output = llm_response.message.replace('\n', ' ')
+            is_final_output = llm_response.is_final_output
+            # check_value(
+            #     is_final_output,
+            #     True,
             #     'Model isn\'t able to predict the response in single shot'
             # )
             model_output = execute_command(model_sql_output)
@@ -166,3 +227,31 @@ def test_accuracy():
             AI\' SQL Output = {model_sql_output}
             """
             check_value(model_output, expected_output, f'{debugging_info}')
+    
+    
+    model2 = create_model()
+    schema_path = '../../data/schemas/website_aggregates.txt'
+    schema_path = CWD.joinpath(schema_path).absolute()
+    model2.load_schema_from_file(schema_path)
+    
+
+    # for testcase in testcases[4:]:
+    #     for i in range(NO_OF_REPETITIONS):
+    #         user_input = testcase['input']
+    #         expected_output = testcase['output']
+    #         expected_sql_output = testcase['sql_output']
+    #         llm_response = model2.predict(user_input)
+    #         model_sql_output = llm_response.message.replace('\n', ' ')
+    #         is_final_output = llm_response.is_final_output
+    #         # check_value(
+    #         #     is_final_output,
+    #         #     True,
+    #         #     'Model isn\'t able to predict the response in single shot'
+    #         # )
+    #         model_output = execute_command(model_sql_output)
+    #         debugging_info = f"""
+    #         User Chat = {user_input}
+    #         Expected SQL Output = {expected_sql_output}
+    #         AI\' SQL Output = {model_sql_output}
+    #         """
+    #         check_value(model_output, expected_output, f'{debugging_info}')

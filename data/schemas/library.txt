@@ -15,6 +15,5 @@ CREATE TABLE books_lent (
     lend_id SERIAL PRIMARY KEY,
     book_id INT REFERENCES library_books(book_id),
     member_id INT REFERENCES library_members(member_id),
-    lend_date DATE,
-    return_date DATE
+    lend_date DATE
 );

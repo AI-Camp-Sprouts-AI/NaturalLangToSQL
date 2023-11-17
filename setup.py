@@ -17,7 +17,8 @@ setup(
             'InquirerPy',
             'pytest',
             'pytest-check',
-            'pytest-html'
+            'pytest-html',
+            'tqdm'
         ]
     },
     entry_points="""

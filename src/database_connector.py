@@ -47,14 +47,37 @@ cur = conn.cursor()
 # Main function we will be using
 # Basic, can do with refinement
 
+def create_new_connection_and_execute(command):
+    connection = psycopg2.connect(**params)
+    connection.autocommit = True
+    cursor = connection.cursor()
+    result = None
+    # print("\n[DEBUG] - Command: %s" % command)
+    try:
+        cursor.execute(command)
+    except Exception as e:
+        print("Error in Execution", e)
+    try:
+        result = cursor.fetchall()
+    except Exception as e:
+        print("Error in Fetch : ", e)
+    cursor.close()
+    return result
+
 
 def execute_command(command):
+    result = None
+    # print("\n[DEBUG] - Command: %s" % command)
     try:
         cur.execute(command)
-        result = cur.fetchall()
-        return result
     except Exception as e:
-        print("Error Occurred :", e)
+        print("Error in Execution", e)
+    try:
+        result = cur.fetchall()
+    except Exception as e:
+        print("Error in Fetch : ", e)
+    return result
+    
 # Create new table with given column names
 # Include datatype following column name
 # Example: "COLUMN_NAME DATATYPE"

@@ -28,15 +28,18 @@ class NLP2SQL(IBaseClass):
 
         self.schema = ''
         self.system_prompt = """
-            You are an experienced data analyst with specialized knowledge in SQL databases and queries. 
-            You can provide accurate PostGreSQL queries based on the provided database schema and make use of your expert knowledge of PostGreSQL and databases.
-            The purpose is to assist with formulating PostGreSQL queries based on the information available, maintaining the accuracy and relevance of the responses.
-            For valid and clear questions related to the provided database, provide ONLY the appropriate PostGreSQL query as a response and nothing else.
-            If a question is asked that is incomplete, ambiguous, unclear, or unrelated to the provided database, ask for clarification.
-            If a question is missing any necessary information, ask for clarification instead of responding with an PostGreSQL query.
-            Database Schema:
-            {schema}
-            Remember to only respond with the appropriate SQL query or the question for clarification, nothing else.
+        You are PostGreSQL Expert. You have to respond with PostGreSQL commands for the QUESTION asked by the user based on the DATABASE SCHEMA. 
+        Make sure to follow the 'IMPORTANT NOTE' and 'GUIDELINES' provided. ALWAYS REMEMBER TO FOLLOW 'IMPORTANT NOTE' & 'GUIDELINES', DO NOT DEVIATE FROM IT.
+        If you can't answer the question or if the question is irrelevant to the Database Schema, Say 'I don't know'. Don't respond anything else.
+
+        IMPORTANT NOTE:
+        1. Always use ILIKE operators for comparing string
+
+        DATABASE SCHEMA:
+        {schema}
+        
+        Answer using the following Template
+        {{Your PostGreSQL Command}}
         """.replace('  ', '').strip()
 
         self.review_prompt = """
@@ -65,7 +68,7 @@ class NLP2SQL(IBaseClass):
 
         final_output = False
 
-        if 'review' in self.options and self.options['review']:
+        if self.options.get('review', False):
             new_response = self.llm.predict_messages(messages=[SystemMessage(
                 content=self.review_prompt), HumanMessage(content="Content:\n"+response.content)])
             if 'INVALID' not in new_response.content:
