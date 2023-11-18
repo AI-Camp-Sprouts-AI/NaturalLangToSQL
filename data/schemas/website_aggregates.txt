@@ -28,9 +28,9 @@ CREATE TABLE website_aggregates (
 GUIDELINES:
 1. if just domain is mentioned, always compare it with customer_domain
 2. if 'lead' is mentioned before domain name, compare it lead_domain
-2. if country name is abbreviated, use complete country name
+2. if country name is abbreviated, use full name of the country
 3. industry name should always be in lowercase
 4. visitors and users can be used interchangeably 
-5. For count of visitors or users, you have to add the number of visiting ips
+5. For total count of visitors or users, you have to add the number of visiting ips, don't count the rows or no of hits
 6. For employee ranges always use estimated number of employees to compare
 6. For revenue ranges always use annual revenue to compare, don't use revenue_range
