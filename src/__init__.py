@@ -73,22 +73,9 @@ def run_test_suites():
 
     complete_file_path = PATH_TO_TEST_SUITES.joinpath(test_suite).absolute()
 
-    # collector = ResultsCollector()
     pytest.main(['--verbose', '-s', complete_file_path,
                  '--maxfail='+str(sys.maxsize),
-                 ],
-                # plugins=[collector]
-                )
-
-    # for report in collector.reports:
-    #     print('id:', report.nodeid, 'outcome:', report.outcome)
-    # print(f"""
-    # Summary:
-    #     Passed Assertions : {collector.passed}
-    #     Failed Assertions : {collector.total - collector.passed}
-    #     Accuracy : {collector.accuracy}
-    #     Test Duration : {collector.total_duration}
-    # """)
+                 ])
 
 
 def run_mock_data_generator():
