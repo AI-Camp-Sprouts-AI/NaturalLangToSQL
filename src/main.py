@@ -31,7 +31,9 @@ class NLP2SQL(IBaseClass):
         You are PostGreSQL Expert. You have to respond with PostGreSQL commands for the QUESTION asked by the user based on the DATABASE SCHEMA. 
         Make sure to follow the 'IMPORTANT NOTE' and 'GUIDELINES' provided. ALWAYS REMEMBER TO FOLLOW 'IMPORTANT NOTE' & 'GUIDELINES', DO NOT DEVIATE FROM IT.
         If you can't answer the question or if the question is irrelevant to the Database Schema, Say 'I don't know'. Don't respond anything else.
-
+        If a question is incomplete, ambiguous, unclear, or unrelated to the provided database, ASK FOR CLARIFICATION INSTEAD OF RESPONDING WITH PostGreSQL QUERY
+        If a question is missing any necessary information, ASK FOR CLARIFICATION INSTEAD OF RESPONDING WITH PostGreSQL QUERY
+        
         IMPORTANT NOTE:
         1. Always use ILIKE operators for comparing string
 
@@ -122,52 +124,6 @@ output_type_class_map = {
     OutputTypes.SQL: NLP2SQL,
     # OutputTypes.API: NLP2API,
 }
-
-
-class ResultsCollector:
-    def __init__(self):
-        self.reports = []
-        self.collected = 0
-        self.exitcode = 0
-        self.passed = 0
-        self.failed = 0
-        self.xfailed = 0
-        self.skipped = 0
-        self.accuracy = 0.0
-        self.total_duration = 0
-        self.completed_assertions = 0
-        self.passed_assertions = 0
-
-    @pytest.hookimpl(hookwrapper=True)
-    def pytest_runtest_makereport(self, item, call):
-        outcome = yield
-        report = outcome.get_result()
-        if report.when == 'call':
-            self.reports.append(report)
-
-    def pytest_assertrepr_compare(self, config, op, left, right):
-        self.completed_assertions += 1
-        if self.completed_assertions == 1:
-            print('\n')
-        print(f"Completed Assertions:{self.completed_assertions}")
-
-    def pytest_assertion_pass(self, item, lineno, orig, expl):
-        self.passed_assertions += 1
-
-    def pytest_collection_modifyitems(self, items):
-        self.collected = len(items)
-
-    def pytest_terminal_summary(self, terminalreporter):
-        self.passed = self.passed_assertions
-        self.failed = len(terminalreporter.stats.get('failed', []))
-        self.xfailed = len(terminalreporter.stats.get('xfailed', []))
-        self.skipped = len(terminalreporter.stats.get('skipped', []))
-        self.total = self.completed_assertions
-        self.accuracy = 0
-        if self.completed_assertions > 0:
-            self.accuracy = round(
-                (self.passed / self.completed_assertions) * 100, 2)
-        self.total_duration = time.time() - terminalreporter._sessionstarttime
 
 
 def initialize_model(llm, options={}, output_type: OutputTypes = OutputTypes.SQL):

@@ -10,7 +10,7 @@ from pathlib import Path
 from glob import glob
 
 from .database_connector import execute_command
-from .main import ResultsCollector, initialize_model
+from .main import initialize_model
 from .mock_data_generator import add_mock_data_to_db
 from langchain.chat_models import ChatOpenAI
 
@@ -27,6 +27,10 @@ def create_model():
                      openai_api_key=api_key, temperature=0)
     model = initialize_model(llm=llm, options={'memory': 3, 'review': True})
     return model
+
+
+def get_sql_output(model, input):
+    return model.predict(input)
 
 
 def create_terminal_instance():
@@ -73,7 +77,7 @@ def run_test_suites():
 
     complete_file_path = PATH_TO_TEST_SUITES.joinpath(test_suite).absolute()
 
-    pytest.main(['--verbose', '-s', complete_file_path,
+    pytest.main(['-vv', '-s', complete_file_path,
                  '--maxfail='+str(sys.maxsize),
                  ])
 
