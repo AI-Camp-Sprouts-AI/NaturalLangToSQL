@@ -587,16 +587,16 @@ def check_value(value, expected, info=''):
         assert expected == value, info
 
 
-def run_model(testcase, schema_string = None):
+def run_model(testcase, schema_string=None):
     model = create_model()
-    
+
     if schema_string is None:
-        schema_path = '../../data/schemas/website_aggregates.txt'
-        schema_path = CWD.joinpath(schema_path).absolute()
-        model.load_schema_from_file(schema_path)
+        # schema_path = '../../data/schemas/website_aggregates.txt'
+        # schema_path = CWD.joinpath(schema_path).absolute()
+        # model.load_schema_from_file(schema_path)
+        raise Exception('Schema string has to be specified')
     else:
         model.load_schema_as_string(schema_string)
-        
 
     user_input = testcase['input']
     expected_output = testcase['output']
@@ -641,10 +641,11 @@ progress_bar = tqdm(total=len(testcases) * NO_OF_ASSERTIONS_PER_TEST,
 def test_accuracy_of_model():
     batches = split_into_batches(testcases, count=50)
     batches_progress = tqdm(total=len(batches), desc='Batches Completed')
-    with open('/Users/pranomvignesh/Workfolder/NaturalLangToSQL/data/schemas/website_aggregates.txt', 'r') as f:
+    schema_path = '../../data/schemas/website_aggregates.txt'
+    schema_path = CWD.joinpath(schema_path).absolute()
+    with open(schema_path, 'r') as f:
         schema_string = f.read()
-    
-    # print(schema_string)
+
     for set_of_testcases in batches:
         threads = []
         for testcase in set_of_testcases:
@@ -660,7 +661,7 @@ def test_accuracy_of_model():
             thread.join()
         batches_progress.update(1)
         time.sleep(0.5)
-    
+
     # # for set_of_testcases in batches:
     # threads = []
     # for testcase in testcases:
