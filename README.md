@@ -2,19 +2,44 @@
 
 This Python package converts natural language queries into PostgreSQL commands. It uses OpenAI's GPT-3.5-turbo model to understand and translate the user's input into SQL queries. The package also includes functionalities for testing the accuracy of the model and generating mock data.
 
-## Installation
+## Quick Installation
 
-To install the package, clone the repository and install the required dependencies.
+```bash
+pip3 install text_to_sql # pip3 for MacOS/Linux and pip for Windows
+```
+
+## Getting Started
+
+Here is the python code for generating the PostgreSQL query using GPT-3.5 Turbo 16k model
+
+```python
+from text_to_sql import create_model, get_sql_query, execute_command
+
+model = create_model()
+
+model.load_schema_from_file('<file_path>')
+
+llm_output = get_sql_query(model, '<natural_language_query>')
+
+print('SQL Query: ', llm_output.message)
+
+if llm_output.is_final_output:
+    print('SQL Output: ', execute_command(llm_output.message))
+
+```
+
+More examples are available [here](./examples/)
 
 ## Usage
 
 ### Creating a Model
 
-To create a model, use the `create_model` function. This function initializes the language model with the OpenAI API key and sets the temperature to 0.
+To create a model, use the `create_model` function. This function initializes the language model GPT 3.5 Turbo 16k with the OpenAI API key and sets the temperature to 0.
 
 ```python
-from src import create_model
+from text_to_sql import create_model
 
+# !Important OPENAI_API_KEY should be added in the environment variable before calling this function
 model = create_model()
 ```
 
@@ -68,7 +93,7 @@ The package includes a test suite for the `website_aggregates` schema. The test 
 
 To run the test suite, use the `run_test_suites` function and select the `website_aggregate_test.py` file.
 
-# Database Connector
+## Database Connector
 
 `database_connector.py` contains 7 functions that makes interacting with PostgreSQL databases using the psycopg2 Python module easier. The functions currently present include functions for:
 
@@ -80,7 +105,7 @@ To run the test suite, use the `run_test_suites` function and select the `websit
 - Checking if a table exists
 - Executing user-inputted commands yourself (recommended)
 
-## Pre-requisites
+### Pre-requisites
 
 Before using these functions, ensure that you complete the following beforehand:
 
@@ -105,9 +130,9 @@ sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
 from database_connector import *
 ```
 
-## Executing user commands
+### Executing user commands
 
-### execute_command(command)
+#### execute_command(command)
 
 This function executes a SQL command passed to it as a string. Use this whenever possible.
 
@@ -132,9 +157,9 @@ print(result)
 # Output: []
 ```
 
-## Creating a table
+### Creating a table
 
-### create_table(table_name, *columns)
+#### create_table(table_name, *columns)
 
 This function creates a named table with specified columns.
 
@@ -155,9 +180,9 @@ If something goes wrong, such as a table already exists or an invalid data type,
 create_table("table_2", "name varchar(255), age int, country varchar(3)")
 ```
 
-## Deleting a table
+### Deleting a table
 
-### drop_table(table_name)
+#### drop_table(table_name)
 
 This function deletes the table matching the table name.
 
@@ -177,9 +202,9 @@ If something goes wrong, such as a table does not exist or a permission error, i
 drop_table("table_1")
 ```
 
-## Selecting records
+### Selecting records
 
-### select(table_name, column_names, selectors=None)
+#### select(table_name, column_names, selectors=None)
 
 This function selects records from an existing table with optional selectors.
 
@@ -212,9 +237,9 @@ print(result)
 # Output: [{'name':'a name', 'age':'number'}, ...]
 ```
 
-## Inserting records
+### Inserting records
 
-### insert_records(table_name, records)
+#### insert_records(table_name, records)
 
 This function inserts new records into an existing table.
 
@@ -239,9 +264,9 @@ records = [
 insert_records("test1", records)
 ```
 
-## Dropping records
+### Dropping records
 
-### delete_records(table_name, selectors=None)
+#### delete_records(table_name, selectors=None)
 
 This function deletes records from an existing table using the selectors, or all records if none are specified.
 
@@ -270,9 +295,9 @@ delete_records("table_2", selectors)
 delete_records("table_2")
 ```
 
-## Existing table
+### Existing table
 
-### exists(table_name)
+#### exists(table_name)
 
 This function checks if a table with the given table name exists and returns a boolean.
 
