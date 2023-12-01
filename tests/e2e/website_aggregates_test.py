@@ -5,7 +5,7 @@ import time
 from tqdm import tqdm
 from decimal import Decimal
 from src.text_to_sql import create_model
-from src.text_to_sql.database_connector import create_new_connection_and_execute
+from src.text_to_sql.database_connector import execute_command
 from decimal import Decimal
 from pathlib import Path
 from pytest_check import check
@@ -610,7 +610,7 @@ def run_model(testcase, schema_string=None):
         'Model isn\'t able to predict the response in single shot'
     )
     if is_final_output:
-        model_output = create_new_connection_and_execute(model_sql_output)
+        model_output = execute_command(model_sql_output)
         debugging_info = f"\
         \nUser Chat = {user_input}\
         \nProper SQL Query = {expected_sql_output}\
@@ -680,7 +680,7 @@ def test_accuracy_of_model():
 
 
 if __name__ == '__main__':
-    # print(create_new_connection_and_execute("""
+    # print(execute_command("""
     #     SELECT industry, SUM(estimated_num_employees) AS total_employees
     #     FROM website_aggregates
     #     WHERE dt >= CURRENT_DATE - INTERVAL '14 days'

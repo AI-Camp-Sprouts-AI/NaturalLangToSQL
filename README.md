@@ -140,7 +140,7 @@ This function creates a named table with specified columns.
 
 - **Parameters:**  
 `table_name`: A string containing the name of the table to be created.  
-`columns`: A string containing names of columns, ` ` (space), the data type of the column, separated by `, ` (comma space).
+`columns`: A string containing names of columns, `` (space), the data type of the column, separated by `,` (comma space).
 
 - **Returns:**  
 None.
@@ -233,9 +233,9 @@ If something goes wrong, such as a table or a column does not exist or a value d
 ```python
 # Insert two new records into table_2
 records = [
-			{"name":"John","age":"29","country":"US"},
-			{"name":"Jane","age":"24","country":"CA"}
-		  ]
+    {"name":"John","age":"29","country":"US"},
+    {"name":"Jane","age":"24","country":"CA"}
+]
 insert_records("test1", records)
 ```
 

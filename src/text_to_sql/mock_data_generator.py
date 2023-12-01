@@ -28,7 +28,7 @@
         
 """
 
-from src.text_to_sql.database_connector import check_exists, create_table, insert_records
+from .database_connector import check_exists, create_table, insert_records
 
 
 def create_mock_data(record: dict, count: int = 1):

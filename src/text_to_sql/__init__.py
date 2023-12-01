@@ -1,18 +1,14 @@
 import re
-import importlib
-import pytest
 import sys
 
 from os import getenv
 from dotenv import load_dotenv, find_dotenv
-from InquirerPy import inquirer
 from pathlib import Path
 from glob import glob
 
-from .database_connector import execute_command
+# Exports from Module
 from .main import initialize_model
-from .mock_data_generator import add_mock_data_to_db
-from langchain.chat_models import ChatOpenAI
+from .database_connector import execute_command, connect_and_execute_command
 
 CWD = Path(__file__).parent
 
@@ -20,11 +16,13 @@ PATH_TO_FAKE_DATASTRUCTURES = CWD.joinpath('../../data/fake_data_structures')
 PATH_TO_TEST_SUITES = CWD.joinpath('../../tests')
 
 
-def create_model():
+def create_model(llm=None):
     load_dotenv(find_dotenv())
-    api_key = getenv('OPENAI_API_KEY')
-    llm = ChatOpenAI(model="gpt-3.5-turbo-16k",
-                     openai_api_key=api_key, temperature=0)
+    if llm is None:
+        from langchain.chat_models import ChatOpenAI
+        api_key = getenv('OPENAI_API_KEY')
+        llm = ChatOpenAI(model="gpt-3.5-turbo-16k",
+                         openai_api_key=api_key, temperature=0)
     model = initialize_model(llm=llm, options={'memory': 3, 'review': True})
     return model
 
@@ -51,13 +49,16 @@ def run_sample_in_terminal():
             output = model.predict(user_input)
             if output.is_final_output:
                 print("Query : \n\"", output.message + '"\n')
-                print("Output : \n", execute_command(output.message))
+                print("Output : \n", execute_command(
+                    output.message))
                 print('-'*80 + '\n')
             else:
                 print(output.message)
 
 
 def run_test_suites():
+    import pytest
+    from InquirerPy import inquirer
     """
     This function should use the testcase_runner.py module to run the testcases
 
@@ -83,6 +84,9 @@ def run_test_suites():
 
 
 def run_mock_data_generator():
+    from .mock_data_generator import add_mock_data_to_db
+    from InquirerPy import inquirer
+    import importlib
     """
     This function should use the mock_data_generator.py module
     to create the mock data.

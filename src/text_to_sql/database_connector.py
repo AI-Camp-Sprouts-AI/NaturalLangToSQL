@@ -27,30 +27,27 @@ from psycopg2 import sql
 from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv())
 
-# Load credentials from .env file
-params = {
-    'dbname': os.environ.get("DB_NAME"),
-    'user': os.environ.get("USERNAME"),
-    'password': os.environ.get("PASSWORD"),
-    'host': os.environ.get("HOST"),
-    'port': os.environ.get("PORT")
-}
 
-# Connect to the database
-conn = psycopg2.connect(**params)
-# Execute all statements without needing to call commit()
-conn.autocommit = True
+def init_connection(params=None):
+    if params is None:
+        params = {
+            'dbname': os.environ.get("DB_NAME"),
+            'user': os.environ.get("USERNAME"),
+            'password': os.environ.get("PASSWORD"),
+            'host': os.environ.get("HOST"),
+            'port': os.environ.get("PORT")
+        }
+    # Connect to the database
+    conn = psycopg2.connect(**params)
+    # Execute all statements without needing to call commit()
+    conn.autocommit = True
+    # Create a cursor
+    cur = conn.cursor()
+    return conn, cur
 
-# Create a cursor
-cur = conn.cursor()
 
-# Main function we will be using
-# Basic, can do with refinement
-
-def create_new_connection_and_execute(command):
-    connection = psycopg2.connect(**params)
-    connection.autocommit = True
-    cursor = connection.cursor()
+def connect_and_execute_command(params, command):
+    connection, cursor = init_connection(params)
     result = None
     # print("\n[DEBUG] - Command: %s" % command)
     try:
@@ -66,6 +63,7 @@ def create_new_connection_and_execute(command):
 
 
 def execute_command(command):
+    conn, cur = init_connection()
     result = None
     # print("\n[DEBUG] - Command: %s" % command)
     try:
@@ -77,7 +75,7 @@ def execute_command(command):
     except Exception as e:
         print("Error in Fetch : ", e)
     return result
-    
+
 # Create new table with given column names
 # Include datatype following column name
 # Example: "COLUMN_NAME DATATYPE"
@@ -85,6 +83,7 @@ def execute_command(command):
 
 
 def create_table(table_name, *columns):
+    conn, cur = init_connection()
     with conn:
         with conn.cursor() as cursor:
             column_names = ", ".join(columns)
@@ -95,6 +94,7 @@ def create_table(table_name, *columns):
 
 
 def drop_table(table_name):
+    conn, cur = init_connection()
     with conn:
         with conn.cursor() as cursor:
             sql = f"DROP TABLE {table_name};"
@@ -107,6 +107,7 @@ def drop_table(table_name):
 
 
 def select(table_name, column_names, selectors=None):
+    conn, cur = init_connection()
     with conn:
         with conn.cursor() as cursor:
             columns = sql.SQL(", ").join(sql.Identifier(col)
@@ -149,6 +150,7 @@ def select(table_name, column_names, selectors=None):
 
 
 def insert_records(table_name, records):
+    conn, cur = init_connection()
     with conn:
         with conn.cursor() as cursor:
             columns = sql.SQL(", ").join(sql.Identifier(col)
@@ -170,6 +172,7 @@ def insert_records(table_name, records):
 
 
 def delete_records(table_name, selectors=None):
+    conn, cur = init_connection()
     with conn:
         with conn.cursor() as cursor:
             table = sql.Identifier(table_name)
@@ -204,6 +207,7 @@ def delete_records(table_name, selectors=None):
 
 
 def check_exists(table_name):
+    conn, cur = init_connection()
     with conn:
         with conn.cursor() as cursor:
             table = sql.Literal(table_name)
