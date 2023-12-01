@@ -321,3 +321,12 @@ print(exists("table_1"))
 print(exists("table_2"))
 # Output: True
 ```
+
+## Developers
+
+Vignesh Prakash - [pranomvignesh@gmail.com](pranomvignesh@gmail.com)
+Sullivan Dovie - [sullivandovie@gmail.com](sullivandovie@gmail.com)
+Elhanan Wong - [wong.elhanan@gmail.com](wong.elhanan@gmail.com)
+Ayana Gaur - [ayanagaur2@gmail.com]( ayanagaur2@gmail.com)
+Mikhael Gonzalez - [mikhael.gonzalez@gmail.com](mikhael.gonzalez@gmail.com)
+Elizabeth Petit - [elizavetapetit@gmail.com](elizavetapetit@gmail.com)

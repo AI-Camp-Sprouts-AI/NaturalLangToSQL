@@ -5,7 +5,7 @@ with open('./README.md', 'r') as file:
 
 setup(
     name="text_to_sql",
-    version="0.0.5",
+    version="0.0.6",
     description="""
     A Python package which converts natural language text to PostgreSQL commands
     based on provided database schema
@@ -15,14 +15,7 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/AI-Camp-Sprouts-AI/NaturalLangToSQL",
-    author="""
-    Vignesh Prakash (pranomvignesh)
-    Sullivan Dovie - sullivandovie@gmail.com
-    Elhanan Wong - wong.elhanan@gmail.com
-    Ayana Gaur -  ayanagaur2@gmail.com
-    Mikhael Gonzalez - mikhael.gonzalez@gmail.com
-    Elizabeth Petit - elizavetapetit@gmail.com
-    """,
+    author="""Vignesh Prakash""",
     author_email="pranomvignesh@gmail.com",
     license="MIT",
     install_requires=[
