@@ -27,7 +27,7 @@ def create_model(llm=None):
     return model
 
 
-def get_sql_output(model, input):
+def get_sql_query(model, input):
     return model.predict(input)
 
 

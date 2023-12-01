@@ -5,7 +5,7 @@ with open('./README.md', 'r') as file:
 
 setup(
     name="text_to_sql",
-    version="0.0.4",
+    version="0.0.5",
     description="""
     A Python package which converts natural language text to PostgreSQL commands
     based on provided database schema

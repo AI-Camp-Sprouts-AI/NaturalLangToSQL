@@ -54,7 +54,7 @@ class NLP2SQL(IBaseClass):
 
     def predict(self, user_input: str) -> ModelOutput:
         if len(self.schema) == 0:
-            return ModelOutput("Schema not loaded", True)
+            raise Exception('Schema not loaded. Please load the database schema using `model.load_schema_from_file` or `model.load_schema_as_string`')
         if len(user_input) == 0:
             return ModelOutput("I'm sorry, I don't understand your question.", False)
         if user_input[-1] not in '.;:?!':

@@ -73,7 +73,7 @@ testcases = [{
     'description': "Total count of visitors in the year 2023."
 }, {
     'questions': [
-        "How many total visitors have visited the lead domain lead domain tesla.com whose employee count is within 1000 to 10000?",
+        "How many total visitors have visited the lead domain tesla.com whose employee count is within 1000 to 10000?",
         "What's the total count of visitors to the lead domain tesla.com within the employee range of 1000 to 10000?",
         "Can you provide the overall number of visitors who have visited lead domain tesla.com who has the employee count between 1000 and 10000?",
         "How many visitors, specifically within the employee count of 1000 to 10000, have accessed the lead lead domain tesla.com?",
