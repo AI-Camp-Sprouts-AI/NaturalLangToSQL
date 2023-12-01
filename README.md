@@ -15,6 +15,7 @@ Here is the python code for generating the PostgreSQL query using GPT-3.5 Turbo 
 ```python
 from text_to_sql import create_model, get_sql_query, execute_command
 
+# set OPENAI_API_KEY in the environment variable 
 model = create_model()
 
 model.load_schema_from_file('<file_path>')
@@ -325,8 +326,13 @@ print(exists("table_2"))
 ## Developers
 
 Vignesh Prakash - [pranomvignesh@gmail.com](pranomvignesh@gmail.com)
+
 Sullivan Dovie - [sullivandovie@gmail.com](sullivandovie@gmail.com)
+
 Elhanan Wong - [wong.elhanan@gmail.com](wong.elhanan@gmail.com)
+
 Ayana Gaur - [ayanagaur2@gmail.com]( ayanagaur2@gmail.com)
+
 Mikhael Gonzalez - [mikhael.gonzalez@gmail.com](mikhael.gonzalez@gmail.com)
+
 Elizabeth Petit - [elizavetapetit@gmail.com](elizavetapetit@gmail.com)
