@@ -28,8 +28,8 @@ Natural Language Inputs:
 Note: This is not an exhaustive list of all the queries, if you feel there might be some more type of queries, add those too.
 """
 
-from src import create_model
-from src.database_connector import execute_command
+from src.text_to_sql import create_model
+from src.text_to_sql.database_connector import execute_command
 from decimal import Decimal
 from pathlib import Path
 from pytest_check import check

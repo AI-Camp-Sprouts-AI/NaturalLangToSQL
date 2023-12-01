@@ -9,7 +9,7 @@ Here the schema of the table from client has to be pasted
     
 """
 
-from src.utils import generate_int_in_range, \
+from src.text_to_sql.utils import generate_int_in_range, \
     hash_fun, \
     get_structure_for_faker, \
     generate_using, \
@@ -18,7 +18,7 @@ from src.utils import generate_int_in_range, \
     generate_rand_from_choices, \
     get_table_blueprint
 
-from src.mock_data_generator import create_mock_data, \
+from src.text_to_sql.mock_data_generator import create_mock_data, \
     insert_records, \
     create_table,\
     check_exists

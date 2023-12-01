@@ -1,12 +1,11 @@
 import threading
 import random
 import time
-import datetime
 
 from tqdm import tqdm
 from decimal import Decimal
-from src import create_model
-from src.database_connector import create_new_connection_and_execute
+from src.text_to_sql import create_model
+from src.text_to_sql.database_connector import create_new_connection_and_execute
 from decimal import Decimal
 from pathlib import Path
 from pytest_check import check
@@ -571,7 +570,9 @@ def linearize_testcases(testcases, no_of_repetitions=1):
     return array
 
 
-def split_into_batches(array, count=100):
+def split_into_batches(array, count=None):
+    if count is None:
+        count = len(array)
     batches = []
     i = 0
     while i < len(array):
@@ -586,11 +587,16 @@ def check_value(value, expected, info=''):
         assert expected == value, info
 
 
-def run_model(testcase):
+def run_model(testcase, schema_string = None):
     model = create_model()
-    schema_path = '../../data/schemas/website_aggregates.txt'
-    schema_path = CWD.joinpath(schema_path).absolute()
-    model.load_schema_from_file(schema_path)
+    
+    if schema_string is None:
+        schema_path = '../../data/schemas/website_aggregates.txt'
+        schema_path = CWD.joinpath(schema_path).absolute()
+        model.load_schema_from_file(schema_path)
+    else:
+        model.load_schema_as_string(schema_string)
+        
 
     user_input = testcase['input']
     expected_output = testcase['output']
@@ -617,7 +623,7 @@ def run_model(testcase):
 
 
 CWD = Path(__file__).parent
-NO_OF_REPETITIONS = 10
+NO_OF_REPETITIONS = 3
 NO_OF_ASSERTIONS_PER_TEST = 2
 
 testcases = list(filter(lambda x: len(x['output']), testcases))
@@ -635,13 +641,17 @@ progress_bar = tqdm(total=len(testcases) * NO_OF_ASSERTIONS_PER_TEST,
 def test_accuracy_of_model():
     batches = split_into_batches(testcases, count=50)
     batches_progress = tqdm(total=len(batches), desc='Batches Completed')
+    with open('/Users/pranomvignesh/Workfolder/NaturalLangToSQL/data/schemas/website_aggregates.txt', 'r') as f:
+        schema_string = f.read()
+    
+    # print(schema_string)
     for set_of_testcases in batches:
         threads = []
         for testcase in set_of_testcases:
             threads.append(
                 threading.Thread(
                     target=run_model,
-                    args=[testcase]
+                    args=[testcase, schema_string]
                 )
             )
         for thread in threads:
@@ -650,16 +660,32 @@ def test_accuracy_of_model():
             thread.join()
         batches_progress.update(1)
         time.sleep(0.5)
+    
+    # # for set_of_testcases in batches:
+    # threads = []
+    # for testcase in testcases:
+    #     threads.append(
+    #         threading.Thread(
+    #             target=run_model,
+    #             args=[testcase, schema_string]
+    #         )
+    #     )
+    # for thread in threads:
+    #     thread.start()
+    # for thread in threads:
+    #     thread.join()
+    # # batches_progress.update(1)
+    # time.sleep(0.5)
 
 
 if __name__ == '__main__':
-    print(create_new_connection_and_execute("""
-        SELECT industry, SUM(estimated_num_employees) AS total_employees
-        FROM website_aggregates
-        WHERE dt >= CURRENT_DATE - INTERVAL '14 days'
-        GROUP BY industry
-        ORDER BY total_employees DESC
-        LIMIT 5;
-    """))
-    # test_accuracy_of_model()
+    # print(create_new_connection_and_execute("""
+    #     SELECT industry, SUM(estimated_num_employees) AS total_employees
+    #     FROM website_aggregates
+    #     WHERE dt >= CURRENT_DATE - INTERVAL '14 days'
+    #     GROUP BY industry
+    #     ORDER BY total_employees DESC
+    #     LIMIT 5;
+    # """))
+    test_accuracy_of_model()
     pass

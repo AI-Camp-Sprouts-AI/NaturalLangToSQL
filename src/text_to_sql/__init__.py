@@ -16,8 +16,8 @@ from langchain.chat_models import ChatOpenAI
 
 CWD = Path(__file__).parent
 
-PATH_TO_FAKE_DATASTRUCTURES = CWD.joinpath('../data/fake_data_structures')
-PATH_TO_TEST_SUITES = CWD.joinpath('../tests/')
+PATH_TO_FAKE_DATASTRUCTURES = CWD.joinpath('../../data/fake_data_structures')
+PATH_TO_TEST_SUITES = CWD.joinpath('../../tests')
 
 
 def create_model():
@@ -33,7 +33,7 @@ def get_sql_output(model, input):
     return model.predict(input)
 
 
-def create_terminal_instance():
+def run_sample_in_terminal():
     """
     Creates a terminal instance
     1. Mimics the exact scenario in which the user will use this package
@@ -41,7 +41,7 @@ def create_terminal_instance():
 
     model = create_model()
     model.load_schema_from_file(CWD.joinpath(
-        '../data/schemas/website_aggregates.txt').absolute())
+        '../../data/schemas/website_aggregates.txt').absolute())
 
     while True:
         user_input = input("Enter something (or type 'exit' to close): ")

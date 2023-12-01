@@ -9,13 +9,13 @@ Here the schema of the table from client has to be pasted
     
 """
 
-from src.utils import generate_double_in_range, \
+from src.text_to_sql.utils import generate_double_in_range, \
     generate_rand_from_choices, \
     get_structure_for_faker, \
     generate_date_between, \
     get_table_blueprint
 
-from src.mock_data_generator import create_mock_data
+from src.text_to_sql.mock_data_generator import create_mock_data
 
 from faker import Faker
 from datetime import datetime, timedelta
